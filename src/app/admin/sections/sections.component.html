@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="col-sm-4 col-xxl-3 px-0 border-end sidebar-scroll-container">
+    <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white h-100">
+      <span class="d-flex align-items-center justify-content-between flex-shrink-0 p-3 border-bottom">
+        <span class="fs-5">Sekcije</span>
+        <button type="button" class="btn btn-primary" (click)="openSectionModal(null, $event)">
+          <i class="bi bi-plus-lg me-1"></i>
+          <span>Dodaj</span>
+        </button>
+      </span>
+
+      <div class="list-group list-group-flush border-bottom" style="overflow-y: auto">
+        <ng-container *ngFor="let section of sections; let i = index">
+          <a
+            [routerLink]="['/console', 'section', section.id]"
+            routerLinkActive="active"
+            class="list-group-item list-group-item-action py-3 lh-tight section"
+          >
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <strong class="mb-1 section-title">{{ section.title }}</strong>
+              <button
+                type="button"
+                class="d-none btn-icon mt-0 me-0"
+                aria-label="Edit section in modal"
+                (click)="openSectionModal(section.id, $event); false"
+              >
+                <i class=" bi bi-pencil-square text-muted" aria-label="Edit"></i>
+              </button>
+            </div>
+            <div *ngIf="section.description as description" class="col-10 mb-1 small section-desc">
+              {{ description }}
+            </div>
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<app-section-edit-modal #editModal [sectionId]="selectedSectionForEdit"></app-section-edit-modal>

@@ -10,7 +10,7 @@
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismiss()">
       {{modalConfig.dismissButtonLabel ?? 'Prekliči'}}
     </button>
-    <button type="button" class="btn" [ngClass]="modalConfig.closeButtonStyle ?? 'btn-danger'" (click)="close()">
+    <button type="button" class="btn" [ngClass]="modalConfig.closeButtonStyle ?? 'btn-danger'" (click)="close()" ngbAutofocus>
       {{modalConfig.closeButtonLabel  ?? 'Potrdi'}}
     </button>
   </div>

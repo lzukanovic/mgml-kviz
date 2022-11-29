@@ -3,11 +3,11 @@ import {Subject, takeUntil} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: 'app-questions',
-  templateUrl: './questions.component.html',
-  styleUrls: ['./questions.component.scss']
+  selector: 'app-questions-list',
+  templateUrl: './questions-list.component.html',
+  styleUrls: ['./questions-list.component.scss']
 })
-export class QuestionsComponent implements OnInit, OnDestroy {
+export class QuestionsListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   selectedSection: number | null = null;
@@ -25,7 +25,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
-        const id = parseInt(params.get('id') ?? '');
+        const id = parseInt(params.get('sectionId') ?? '');
         this.selectedSection = id ? +id : null;
         this.loadQuestions();
       });
