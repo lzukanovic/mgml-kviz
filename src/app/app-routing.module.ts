@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import {ConsoleComponent} from "./admin/console/console.component";
 
 const routes: Routes = [
-  { path: 'console', component: ConsoleComponent }
+  { path: 'console', component: ConsoleComponent },
+  { path: 'console/:id', component: ConsoleComponent }
 ];
 
 @NgModule({
