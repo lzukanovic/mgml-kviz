@@ -1,0 +1,10 @@
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+  .scroll-container {
+    height: calc(100vh - 56px);
+  }
+  .scroll-content {
+    overflow-y: auto;
+  }
+}

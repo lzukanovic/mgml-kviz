@@ -1,0 +1,34 @@
+<ng-template #modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Sekcija</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form">
+      <div class="mb-3">
+        <label for="sectionTitle" class="form-label">Naslov</label>
+        <input type="text" class="form-control" id="sectionTitle" formControlName="title">
+      </div>
+      <div class="mb-3">
+        <label for="sectionDescription" class="form-label">Opis</label>
+        <span id="sectionDescriptionHelp" class="form-text ms-1">(opcijsko)</span>
+        <textarea
+          type="text"
+          class="form-control"
+          id="sectionDescription"
+          formControlName="description"
+          aria-describedby="sectionDescriptionHelp"
+        ></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="sectionId" type="button" class="btn btn-danger" (click)="delete()">Izbriši</button>
+    <div class="flex-grow-1"></div>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismiss()">Prekliči</button>
+    <button type="button" class="btn btn-primary" (click)="save()">Shrani</button>
+  </div>
+</ng-template>
+
+<app-confirm-modal #deleteModal [modalConfig]="deleteModalConfig"></app-confirm-modal>
+<app-confirm-modal #unsavedChangesModal [modalConfig]="unsavedChangesModalConfig"></app-confirm-modal>
