@@ -1,0 +1,33 @@
+<app-top-bar></app-top-bar>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-2 px-0 border-end" style="height: calc(100vh - 56px)">
+      <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white h-100">
+        <span class="d-flex align-items-center justify-content-between flex-shrink-0 p-3 border-bottom">
+          <span class="fs-5">Sekcije</span>
+          <button type="button" class="btn btn-primary">
+            <i class="bi-plus-lg me-1"></i>
+            <span>Dodaj</span>
+          </button>
+        </span>
+
+        <div class="list-group list-group-flush border-bottom" style="overflow-y: auto">
+          <ng-container *ngFor="let item of [].constructor(8); let i = index">
+            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
+              <strong class="mb-1">List group item heading</strong>
+              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+            </a>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <span class="d-flex align-items-center flex-shrink-0 p-3">
+        <span class="fs-5">Vprašanja</span>
+      </span>
+    </div>
+  </div>
+</div>
