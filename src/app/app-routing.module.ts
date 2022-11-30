@@ -24,6 +24,7 @@ const routes: Routes = [
         path: 'question',
         children: [
           { path: '', redirectTo: '/console/section', pathMatch: 'full' },
+          { path: 'new', component: QuestionComponent },
           { path: ':questionId', component: QuestionComponent },
           // TODO
           //   { path: ':questionId/code' },

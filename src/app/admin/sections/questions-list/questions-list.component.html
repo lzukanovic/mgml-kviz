@@ -2,7 +2,7 @@
   <div class="d-flex flex-column align-items-stretch flex-shrink-0 h-100">
     <span class="d-flex align-items-center justify-content-between flex-shrink-0 p-3 border-bottom">
       <span class="fs-5">Vprašanja</span>
-      <button type="button" class="btn btn-primary">
+      <button type="button" class="btn btn-primary" [routerLink]="['/console', 'question', 'new']">
         <i class="bi bi-plus-lg me-1"></i>
         <span>Dodaj</span>
       </button>
@@ -18,7 +18,7 @@
                   <p class="card-text mb-1 trail-text-2">{{ question.title }}</p>
                   <p *ngIf="question.description" class="card-text text-muted small trail-text-3">{{ question.description }}</p>
                 </div>
-                <div class="col-auto d-flex justify-content-end align-items-center">
+                <div class="col-auto pe-xxl-5 d-flex justify-content-end align-items-center">
                   <button
                     type="button"
                     class="btn px-1 py-0 ms-2 fs-4"

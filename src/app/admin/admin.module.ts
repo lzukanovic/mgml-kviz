@@ -10,6 +10,7 @@ import {SharedModule} from "../shared/shared.module";
 import { NoSectionSelectedComponent } from './sections/no-section-selected/no-section-selected.component';
 import { ConsoleComponent } from './console/console.component';
 import { QuestionComponent } from './question/question.component';
+import { AnswerEditModalComponent } from './question/answer-edit-modal/answer-edit-modal.component';
 
 
 
@@ -21,7 +22,8 @@ import { QuestionComponent } from './question/question.component';
     SectionEditModalComponent,
     NoSectionSelectedComponent,
     ConsoleComponent,
-    QuestionComponent
+    QuestionComponent,
+    AnswerEditModalComponent
   ],
   imports: [
     CommonModule,

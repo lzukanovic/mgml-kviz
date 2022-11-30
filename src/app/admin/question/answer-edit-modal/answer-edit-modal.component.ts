@@ -1,23 +1,26 @@
-import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, Output, TemplateRef, ViewChild, EventEmitter} from '@angular/core';
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ConfirmModalComponent, ModalConfig} from "../../../shared/confirm-modal/confirm-modal.component";
+import {FormControl, FormGroup} from "@angular/forms";
+import {AnswersType} from "../../../shared/interfaces";
 
 @Component({
-  selector: 'app-section-edit-modal',
-  templateUrl: './section-edit-modal.component.html',
-  styleUrls: ['./section-edit-modal.component.scss']
+  selector: 'app-answer-edit-modal',
+  templateUrl: './answer-edit-modal.component.html',
+  styleUrls: ['./answer-edit-modal.component.scss']
 })
-export class SectionEditModalComponent implements OnInit {
-  @Input() sectionId: number | null = null;
+export class AnswerEditModalComponent implements OnInit {
+  @Input() answerId: number | null = null;
+  @Input() answerType: AnswersType = "text";
+  @Output() deleteEvent = new EventEmitter<boolean>();
 
-  @ViewChild('modal') private modalContent!: TemplateRef<SectionEditModalComponent>;
+  @ViewChild('modal') private modalContent!: TemplateRef<AnswerEditModalComponent>;
   private modalRef!: NgbModalRef;
 
   @ViewChild('deleteModal') deleteModal!: ConfirmModalComponent;
   deleteModalConfig: ModalConfig = {
     modalTitle: 'Izbriši',
-    modalBody: 'Ali ste prepričani, da želite izbrisati izbrano sekcijo?',
+    modalBody: 'Ali ste prepričani, da želite izbrisati izbrani odgovor?',
     dismissButtonLabel: 'Prekliči',
     closeButtonLabel: 'Potrdi'
   };
@@ -32,8 +35,8 @@ export class SectionEditModalComponent implements OnInit {
   };
 
   form: FormGroup = new FormGroup({
-    title: new FormControl('', Validators.required),
-    description: new FormControl('')
+    text: new FormControl(''),
+    image: new FormControl(''),
   })
 
   constructor(private modalService: NgbModal) { }
@@ -47,14 +50,14 @@ export class SectionEditModalComponent implements OnInit {
       this.modalRef.result.then(resolve, resolve)
     });
 
-    // TODO: load section data
+    // TODO: load answer data
   }
 
   async delete(): Promise<void> {
     if (await this.deleteModal.open()) {
-      // TODO: delete section
       this.form.reset();
       this.modalRef.close();
+      this.deleteEvent.emit(true);
     }
   }
 
@@ -66,7 +69,7 @@ export class SectionEditModalComponent implements OnInit {
   }
 
   async save(): Promise<void> {
-    // TODO: save section data OR create new section
+    // TODO: save answer data OR create new answer
     this.form.reset();
     this.modalRef.close();
   }

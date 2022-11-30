@@ -10,7 +10,18 @@ export interface Question {
   title: string;
   description?: string;
   type: QuestionType;
-  possibleAnswers: string[];
+  possibleAnswers: Answer[];
 }
 
 export type QuestionType = 'singleChoice' | 'multipleChoice';
+
+export interface Answer {
+  id: number;
+  questionId?: number;
+  text?: string;
+  image?: string;
+  selected: boolean;
+  order: number;
+}
+
+export type AnswersType = 'text' | 'image';

@@ -13,10 +13,44 @@ export class QuestionsListComponent implements OnInit, OnDestroy {
 
   selectedSection: number | null = null;
   questionsDisplay: Question[] = [];
+  // TODO: remove
   questions: Question[] = [
-    { id: 1, sectionId: 1, title: 'Kaj vam je bilo najbolj vsec na razstavi 1?', description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', type: "singleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek' ] },
-    { id: 2, sectionId: 1, title: 'Kaj ste si najbolj zapomnili o razstavi 1?', type: "multipleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek', 'geografija pokrajine' ] },
-    { id: 3, sectionId: 2, title: 'Kaj ste si najbolj zapomnili o razstavi 2?', type: "multipleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek', 'geografija pokrajine' ] },
+    {
+      id: 1,
+      sectionId: 1,
+      title: 'Kaj vam je bilo najbolj vsec na razstavi 1?',
+      description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      type: "singleChoice",
+      possibleAnswers: [
+        {id: 0, text: 'metulji', selected: false, order: 0},
+        {id: 1, text: 'clovesko telo', selected: false, order: 1},
+        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
+      ]
+    },
+    {
+      id: 2,
+      sectionId: 1,
+      title: 'Kaj ste si najbolj zapomnili o razstavi 1?',
+      type: "multipleChoice",
+      possibleAnswers: [
+        {id: 0, text: 'metulji', selected: false, order: 0},
+        {id: 1, text: 'clovesko telo', selected: false, order: 1},
+        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2},
+        {id: 3, text: 'geografija pokrajine', selected: false, order: 3}
+      ]
+    },
+    {
+      id: 3,
+      sectionId: 2,
+      title: 'Kaj ste si najbolj zapomnili o razstavi 2?',
+      type: "multipleChoice",
+      possibleAnswers: [
+        {id: 0, text: 'metulji', selected: false, order: 0},
+        {id: 1, text: 'clovesko telo', selected: false, order: 1},
+        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2},
+        {id: 3, text: 'geografija pokrajine', selected: false, order: 3}
+      ]
+    },
   ];
 
   constructor(private route: ActivatedRoute) { }
