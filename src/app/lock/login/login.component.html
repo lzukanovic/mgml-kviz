@@ -1,0 +1,51 @@
+<div class="container-fluid d-flex flex-column pt-5 pb-1" style="height: 100vh">
+  <div class="row flex-grow-1 justify-content-center">
+    <div class="col-10 col-sm-8 col-md-6 col-lg-5 col-xxl-4">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column align-items-stretch" novalidate>
+            <img src="/assets/logo-mgml-color.svg" class="mx-auto" alt="MGML logo">
+
+            <h4>Prijava</h4>
+            <div class="text-muted small mb-3">Prosimo vnesite uporabniško ime in geslo generiranega uporabniškega računa.</div>
+
+            <div class="alert alert-danger" *ngIf="error" role="alert">
+              Napačno uporabniško ime ali geslo.
+            </div>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Uporabniško ime</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                formControlName="username"
+                [class.is-invalid]="username.touched && username.invalid"
+                required
+              >
+              <div class="invalid-feedback">Uporabniško ime je obvezno.</div>
+            </div>
+            <div class="mb-5">
+              <label for="password" class="form-label">Geslo</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                [class.is-invalid]="password.touched && password.invalid"
+                required
+              >
+              <div class="invalid-feedback">Geslo je obvezno.</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" [disabled]="form.invalid">Prijava</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-end">
+    <div class="col-12 d-flex justify-content-end text-end">
+      © Lan Zukanović, 2022
+    </div>
+  </div>
+</div>

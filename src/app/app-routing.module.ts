@@ -5,11 +5,15 @@ import {QuestionsListComponent} from "./admin/sections/questions-list/questions-
 import {NoSectionSelectedComponent} from "./admin/sections/no-section-selected/no-section-selected.component";
 import {ConsoleComponent} from "./admin/console/console.component";
 import {QuestionComponent} from "./admin/question/question.component";
+import {LoginComponent} from "./lock/login/login.component";
+import {AuthGuard} from "./services/auth.guard";
 
 const routes: Routes = [
+  { path: 'login', component: LoginComponent },
   {
     path: 'console',
     component: ConsoleComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'section', pathMatch: 'full' },
       {
