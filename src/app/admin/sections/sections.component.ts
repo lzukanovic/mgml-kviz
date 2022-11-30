@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {SectionEditModalComponent} from "./section-edit-modal/section-edit-modal.component";
+import {Section} from "../../shared/interfaces";
 
 @Component({
   selector: 'app-sections',
@@ -35,10 +36,4 @@ export class SectionsComponent implements OnInit {
     // TODO: refresh sections data
     this.selectedSectionForEdit = null;
   }
-}
-
-interface Section {
-  id: number;
-  title: string;
-  description?: string;
 }

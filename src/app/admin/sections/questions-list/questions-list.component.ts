@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
+import {Question} from "../../../shared/interfaces";
 
 @Component({
   selector: 'app-questions-list',
@@ -13,7 +14,7 @@ export class QuestionsListComponent implements OnInit, OnDestroy {
   selectedSection: number | null = null;
   questionsDisplay: Question[] = [];
   questions: Question[] = [
-    { id: 1, sectionId: 1, title: 'Kaj vam je bilo najbolj vsec na razstavi 1?', type: "singleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek' ] },
+    { id: 1, sectionId: 1, title: 'Kaj vam je bilo najbolj vsec na razstavi 1?', description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', type: "singleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek' ] },
     { id: 2, sectionId: 1, title: 'Kaj ste si najbolj zapomnili o razstavi 1?', type: "multipleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek', 'geografija pokrajine' ] },
     { id: 3, sectionId: 2, title: 'Kaj ste si najbolj zapomnili o razstavi 2?', type: "multipleChoice", possibleAnswers: [ 'metulji', 'clovesko telo', 'zdravstvni oddelek', 'geografija pokrajine' ] },
   ];
@@ -46,14 +47,3 @@ export class QuestionsListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 }
-
-interface Question {
-  id: number;
-  sectionId: number;
-  title: string;
-  description?: string;
-  type: QuestionType;
-  possibleAnswers: string[];
-}
-
-type QuestionType = 'singleChoice' | 'multipleChoice';

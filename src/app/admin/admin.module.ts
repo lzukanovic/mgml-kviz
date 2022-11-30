@@ -9,6 +9,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {SharedModule} from "../shared/shared.module";
 import { NoSectionSelectedComponent } from './sections/no-section-selected/no-section-selected.component';
 import { ConsoleComponent } from './console/console.component';
+import { QuestionComponent } from './question/question.component';
 
 
 
@@ -19,7 +20,8 @@ import { ConsoleComponent } from './console/console.component';
     QuestionsListComponent,
     SectionEditModalComponent,
     NoSectionSelectedComponent,
-    ConsoleComponent
+    ConsoleComponent,
+    QuestionComponent
   ],
   imports: [
     CommonModule,

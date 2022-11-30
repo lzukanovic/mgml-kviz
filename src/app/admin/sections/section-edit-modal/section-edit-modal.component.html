@@ -7,13 +7,12 @@
     <form [formGroup]="form">
       <div class="mb-3">
         <label for="sectionTitle" class="form-label">Naslov</label>
-        <input type="text" class="form-control" id="sectionTitle" formControlName="title" ngbAutofocus>
+        <input type="text" class="form-control" id="sectionTitle" formControlName="title" ngbAutofocus required>
       </div>
       <div class="mb-3">
         <label for="sectionDescription" class="form-label">Opis</label>
         <span id="sectionDescriptionHelp" class="form-text ms-1">(opcijsko)</span>
         <textarea
-          type="text"
           class="form-control"
           id="sectionDescription"
           formControlName="description"
@@ -26,7 +25,7 @@
     <button *ngIf="sectionId" type="button" class="btn btn-danger" (click)="delete()">Izbriši</button>
     <div class="flex-grow-1"></div>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismiss()">Prekliči</button>
-    <button type="button" class="btn btn-primary" (click)="save()">Shrani</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid || !form.dirty">Shrani</button>
   </div>
 </ng-template>
 

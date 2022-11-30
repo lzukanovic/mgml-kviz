@@ -2,14 +2,6 @@
   display: block !important;
 }
 
-.section-title, .section-desc {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .sidebar-scroll-container {
   height: 50vh;
 }

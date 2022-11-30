@@ -1,0 +1,75 @@
+<button type="button" class="btn d-flex align-items-center mx-n1 mt-3" (click)="goBack()">
+  <i class="bi bi-arrow-left fs-4 me-2"></i>
+  <span>Sekcije</span>
+</button>
+
+<div class="container-fluid mt-2 pb-3">
+  <form [formGroup]="form">
+    <div class="row mb-3">
+<!--  TODO: remove if not needed    col-12 col-md-10 col-lg-8 col-xxl-6 -->
+      <div class="col-12 col-lg-6 d-flex flex-column flex-grow-1">
+        <h4 class="mb-3">Vprašanje</h4>
+        <div class="mb-3">
+          <label for="questionTitle" class="form-label">Naslov</label>
+          <input type="text" class="form-control" id="questionTitle" formControlName="title">
+        </div>
+        <div class="flex-grow-1 mb-5 mb-lg-0">
+          <label for="questionDescription" class="form-label">Opis</label>
+          <span id="questionDescriptionHelp" class="form-text ms-1">(opcijsko)</span>
+          <textarea
+            class="form-control"
+            id="questionDescription"
+            formControlName="description"
+            rows="4"
+            aria-describedby="questionDescriptionHelp"
+            style="height: calc(100% - 33.188px) !important;"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <h4 class="mb-3">Odgovor</h4>
+        <div class="mb-3">
+          <label class="form-label">Tip odgovora</label>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              value="singleChoice"
+              id="singleChoiceRadio"
+              formControlName="type"
+            >
+            <label class="form-check-label" for="singleChoiceRadio">
+              Odgovor z eno izbiro
+            </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              value="multipleChoice"
+              id="multipleChoiceRadio"
+              formControlName="type"
+            >
+            <label class="form-check-label" for="multipleChoiceRadio">
+              Odgovor z več izbirami
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Možni odgovori</label>
+          <ul class="list-group">
+            <li class="list-group-item">An item</li>
+            <li class="list-group-item">A second item</li>
+            <li class="list-group-item">A third item</li>
+            <li class="list-group-item">A fourth item</li>
+            <li class="list-group-item">And a fifth one</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Shrani</button>
+  </form>
+</div>
+
