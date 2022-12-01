@@ -31,9 +31,7 @@ const routes: Routes = [
           { path: '', redirectTo: '/console/section', pathMatch: 'full' },
           { path: 'new', component: QuestionComponent },
           { path: ':questionId', component: QuestionComponent },
-          // TODO
-          //   { path: ':questionId/code' },
-          //   { path: ':questionId/statistics' },
+          // TODO  { path: ':questionId/code' },
         ]
       }
     ]
@@ -42,6 +40,7 @@ const routes: Routes = [
     path: 'public/question/:questionId',
     children: [
       { path: '', component: QuizComponent },
+      // TODO  { path: 'statistics' },
     ]
   },
   { path: '**', redirectTo: 'console/section', pathMatch: 'full' },
