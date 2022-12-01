@@ -136,7 +136,9 @@ export class QuestionComponent implements OnInit, OnDestroy {
     }
   }
 
-  async save() {}
+  async save() {
+    // TODO: save
+  }
 
   goBack() {
     this.location.back();

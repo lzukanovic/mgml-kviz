@@ -1,0 +1,13 @@
+.container-fluid {
+  background-color: #EAECEF;
+}
+img {
+  height: 100%;
+  width: clamp(5rem, 30vw, 9rem);
+}
+
+@media (max-width: 300px) {
+  img {
+    margin-bottom: 1rem;
+  }
+}

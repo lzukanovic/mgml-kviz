@@ -7,6 +7,7 @@ import {ConsoleComponent} from "./admin/console/console.component";
 import {QuestionComponent} from "./admin/question/question.component";
 import {LoginComponent} from "./lock/login/login.component";
 import {AuthGuard} from "./services/auth.guard";
+import {QuizComponent} from "./public/quiz/quiz.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -35,6 +36,12 @@ const routes: Routes = [
           //   { path: ':questionId/statistics' },
         ]
       }
+    ]
+  },
+  {
+    path: 'public/question/:questionId',
+    children: [
+      { path: '', component: QuizComponent },
     ]
   },
   { path: '**', redirectTo: 'console/section', pathMatch: 'full' },
