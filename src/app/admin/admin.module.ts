@@ -11,6 +11,8 @@ import { NoSectionSelectedComponent } from './sections/no-section-selected/no-se
 import { ConsoleComponent } from './console/console.component';
 import { QuestionComponent } from './question/question.component';
 import { AnswerEditModalComponent } from './question/answer-edit-modal/answer-edit-modal.component';
+import { QrCodeComponent } from './question/qr-code/qr-code.component';
+import {QRCodeModule} from "angularx-qrcode";
 
 
 
@@ -23,13 +25,15 @@ import { AnswerEditModalComponent } from './question/answer-edit-modal/answer-ed
     NoSectionSelectedComponent,
     ConsoleComponent,
     QuestionComponent,
-    AnswerEditModalComponent
+    AnswerEditModalComponent,
+    QrCodeComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
     SharedModule,
+    QRCodeModule
   ]
 })
 export class AdminModule { }

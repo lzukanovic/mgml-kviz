@@ -8,6 +8,7 @@ import {QuestionComponent} from "./admin/question/question.component";
 import {LoginComponent} from "./lock/login/login.component";
 import {AuthGuard} from "./services/auth.guard";
 import {QuizComponent} from "./public/quiz/quiz.component";
+import {QrCodeComponent} from "./admin/question/qr-code/qr-code.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -31,7 +32,7 @@ const routes: Routes = [
           { path: '', redirectTo: '/console/section', pathMatch: 'full' },
           { path: 'new', component: QuestionComponent },
           { path: ':questionId', component: QuestionComponent },
-          // TODO  { path: ':questionId/code' },
+          { path: ':questionId/code', component: QrCodeComponent },
         ]
       }
     ]
