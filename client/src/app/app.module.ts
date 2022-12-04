@@ -8,6 +8,7 @@ import { PublicModule } from "./public/public.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from "./shared/shared.module";
 import {LockModule} from "./lock/lock.module";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {LockModule} from "./lock/lock.module";
     PublicModule,
     NgbModule,
     SharedModule,
-    LockModule
+    LockModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

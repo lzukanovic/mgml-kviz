@@ -79,7 +79,8 @@
               "browserTarget": "mgml-kviz:build:production"
             },
             "development": {
-              "browserTarget": "mgml-kviz:build:development"
+              "browserTarget": "mgml-kviz:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
