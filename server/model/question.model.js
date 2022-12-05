@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes, Model) => {
 
-  class Section extends Model {}
+  class Question extends Model {}
 
-  Section.init({
+  Question.init({
     // Model attributes are defined here
     // TODO: removing this enables create calls to work since they have no id of object
     // id: {
@@ -10,12 +10,29 @@ module.exports = (sequelize, DataTypes, Model) => {
     //   allowNull: false,
     //   primaryKey: true
     // },
+    sectionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      foreignKey: true
+    },
     title: {
       type: DataTypes.STRING,
       allowNull: false
     },
     description: {
       type: DataTypes.STRING
+    },
+    type: {
+      type: DataTypes.ENUM,
+      // update in postgres types also!
+      values: ['singleChoice', 'multipleChoice'],
+      allowNull: false
+    },
+    content: {
+      type: DataTypes.ENUM,
+      // update in postgres types also!
+      values: ['text', 'image'],
+      allowNull: false
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -27,8 +44,8 @@ module.exports = (sequelize, DataTypes, Model) => {
   }, {
     // Other model options go here
     sequelize, // We need to pass the connection instance
-    modelName: 'section' // We need to choose the model name
+    modelName: 'question' // We need to choose the model name
   });
 
-  return Section;
+  return Question;
 }

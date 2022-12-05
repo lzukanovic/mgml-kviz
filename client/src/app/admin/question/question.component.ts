@@ -1,11 +1,11 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { Location } from '@angular/common';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AnswersType, Question, QuestionType} from "../../shared/interfaces";
-import {ActivatedRoute} from "@angular/router";
-import {Subject, takeUntil} from "rxjs";
+import {ActivatedRoute, Router} from "@angular/router";
+import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {AnswerEditModalComponent} from "./answer-edit-modal/answer-edit-modal.component";
 import {ConfirmModalComponent, ModalConfig} from "../../shared/confirm-modal/confirm-modal.component";
+import {QuestionService} from "../../services/question.service";
 
 @Component({
   selector: 'app-question',
@@ -26,10 +26,14 @@ export class QuestionComponent implements OnInit, OnDestroy {
     closeButtonLabel: 'Potrdi'
   };
 
+  // get from DB
   question!: Question;
-  id!: number;
 
-  // TODO: finish validation
+  // get from URL
+  questionId!: number;
+  sectionId!: number;
+
+  // TODO: finish validation for answers
   form: FormGroup = new FormGroup({
     title: new FormControl('', Validators.required),
     description: new FormControl(''),
@@ -52,8 +56,9 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private location: Location,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private questionService: QuestionService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -61,37 +66,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
-        this.id = parseInt(params.get('questionId') ?? '');
+        this.sectionId = parseInt(params.get('sectionId') ?? '');
+        this.questionId = parseInt(params.get('questionId') ?? '');
         this.loadQuestion();
       });
   }
 
-  // TODO: get data from DB
-  async loadQuestion() {
-    this.question = {
-      id: this.id,
-      sectionId: 1,
-      title: 'Kaj vam je bilo najbolj vsec na razstavi 1?',
-      description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      type: "singleChoice",
-      possibleAnswers: [
-        {id: 0, text: 'metulji', selected: false, order: 0},
-        {id: 1, text: 'clovesko telo', selected: false, order: 1},
-        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
-      ]
-    };
-    this.form.patchValue(this.question);
-    for (const answer of this.question.possibleAnswers) {
-      const fg = new FormGroup({
-        id: new FormControl(answer.id),
-        text: new FormControl(answer.text),
-        image: new FormControl(answer.image),
-        selected: new FormControl(answer.selected),
-        order: new FormControl(answer.order)
-      });
-      this.possibleAnswersForm.push(fg);
-    }
-  }
+  /*
+  * Question's answer operations
+  */
 
   async editAnswer(index: number) {
     this.selectedEditAnswerId = this.possibleAnswersForm.at(index).get("id")?.value;
@@ -129,19 +112,62 @@ export class QuestionComponent implements OnInit, OnDestroy {
     }
   }
 
+  /*
+  * Question operations
+  */
+
+  async loadQuestion() {
+    if (!this.sectionId || !this.questionId) return;
+
+    this.question = await lastValueFrom(this.questionService.getQuestion(this.sectionId, this.questionId));
+    this.form.patchValue(this.question);
+    // TODO: fill answers correctly
+    // for (const answer of this.question.possibleAnswers) {
+    //   const fg = new FormGroup({
+    //     id: new FormControl(answer.id),
+    //     text: new FormControl(answer.text),
+    //     image: new FormControl(answer.image),
+    //     selected: new FormControl(answer.selected),
+    //     order: new FormControl(answer.order)
+    //   });
+    //   this.possibleAnswersForm.push(fg);
+    // }
+  }
+
   async delete() {
-    if (await this.deleteModal.open()) {
-      // TODO: delete question and related entities
+    if (this.sectionId && this.questionId && await this.deleteModal.open()) {
+      const res = await lastValueFrom(this.questionService.deleteQuestion(this.sectionId, this.questionId))
+      if (!res) {
+        // TODO: error something went wrong with deleting
+      }
       this.goBack();
     }
   }
 
   async save() {
-    // TODO: save
+    const data = {
+      id: this.questionId, // number or null
+      ...this.form.getRawValue()
+    }
+
+    if (this.questionId) {
+      const res = await lastValueFrom(this.questionService.updateQuestion(this.sectionId, data))
+      if (!res) {
+        // TODO: error something went wrong with updating
+      }
+    } else {
+      const res = await lastValueFrom(this.questionService.createQuestion(this.sectionId, data))
+      if (!res) {
+        // TODO: error something went wrong with creating
+      }
+      this.router.navigate(['/console', 'section', this.sectionId, 'question', res.id]);
+    }
+
+    this.form.markAsPristine();
   }
 
   goBack() {
-    this.location.back();
+    this.router.navigate(['/console', 'section', this.sectionId]);
   }
 
   ngOnDestroy() {

@@ -7,7 +7,11 @@ app.use(bodyParser.json());
 
 // get all sections
 app.get("/section", (req, res) => {
-  sectionController.getSections().then(data => res.json(data));
+  let queryParams = [];
+  if (req.query.sort) {
+    queryParams = req.query.sort.split(':');
+  }
+  sectionController.getSections(queryParams).then(data => res.json(data));
 })
 
 // get section by id

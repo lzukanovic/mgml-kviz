@@ -2,6 +2,8 @@ export interface Section {
   id: number;
   title: string;
   description?: string;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface Question {
@@ -10,7 +12,10 @@ export interface Question {
   title: string;
   description?: string;
   type: QuestionType;
+  content: AnswersType;
   possibleAnswers: Answer[];
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export type QuestionType = 'singleChoice' | 'multipleChoice';
@@ -25,3 +30,5 @@ export interface Answer {
 }
 
 export type AnswersType = 'text' | 'image';
+
+// TODO: match interfaces with backend!!!!

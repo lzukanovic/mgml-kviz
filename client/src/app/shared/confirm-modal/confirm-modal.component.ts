@@ -8,6 +8,7 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 })
 export class ConfirmModalComponent {
   @Input() modalConfig!: ModalConfig;
+
   @ViewChild('modal') private modalContent!: TemplateRef<ConfirmModalComponent>;
   private modalRef!: NgbModalRef;
 

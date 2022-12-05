@@ -17,15 +17,6 @@ const connect = () => {
     define: {
       //prevent sequelize from pluralizing table names
       freezeTableName: true,
-
-      // don't add the timestamp attributes (updatedAt, createdAt)
-      timestamps: false,
-
-      // Disable createdAt column
-      createdAt: false,
-
-      // Disable updatedAt column
-      updatedAt: false,
     }
   });
 
@@ -33,6 +24,7 @@ const connect = () => {
   db.Sequelize = Sequelize;
   db.sequelize = sequelize;
   db.section = require("../model/section.model")(sequelize, DataTypes, Model);
+  db.question = require("../model/question.model")(sequelize, DataTypes, Model);
 
   return db;
 }

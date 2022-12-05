@@ -1,7 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject, takeUntil} from "rxjs";
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {Question} from "../../../shared/interfaces";
+import {QuestionService} from "../../../services/question.service";
+import {Sort, SortModalComponent} from "../../../shared/sort-modal/sort-modal.component";
 
 @Component({
   selector: 'app-questions-list',
@@ -11,49 +13,19 @@ import {Question} from "../../../shared/interfaces";
 export class QuestionsListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  selectedSection: number | null = null;
-  questionsDisplay: Question[] = [];
-  // TODO: remove
-  questions: Question[] = [
-    {
-      id: 1,
-      sectionId: 1,
-      title: 'Kaj vam je bilo najbolj vsec na razstavi 1?',
-      description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      type: "singleChoice",
-      possibleAnswers: [
-        {id: 0, text: 'metulji', selected: false, order: 0},
-        {id: 1, text: 'clovesko telo', selected: false, order: 1},
-        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
-      ]
-    },
-    {
-      id: 2,
-      sectionId: 1,
-      title: 'Kaj ste si najbolj zapomnili o razstavi 1?',
-      type: "multipleChoice",
-      possibleAnswers: [
-        {id: 0, text: 'metulji', selected: false, order: 0},
-        {id: 1, text: 'clovesko telo', selected: false, order: 1},
-        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2},
-        {id: 3, text: 'geografija pokrajine', selected: false, order: 3}
-      ]
-    },
-    {
-      id: 3,
-      sectionId: 2,
-      title: 'Kaj ste si najbolj zapomnili o razstavi 2?',
-      type: "multipleChoice",
-      possibleAnswers: [
-        {id: 0, text: 'metulji', selected: false, order: 0},
-        {id: 1, text: 'clovesko telo', selected: false, order: 1},
-        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2},
-        {id: 3, text: 'geografija pokrajine', selected: false, order: 3}
-      ]
-    },
-  ];
+  @ViewChild('sortModal') sortModal!: SortModalComponent;
+  sort: Sort = {
+    by: "alphabetically",
+    direction: "ASC"
+  }
 
-  constructor(private route: ActivatedRoute) { }
+  selectedSectionId: number | null = null;
+  questions: Question[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private questionService: QuestionService,
+  ) { }
 
   ngOnInit(): void {
     // listen for section ID changes
@@ -61,19 +33,30 @@ export class QuestionsListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         const id = parseInt(params.get('sectionId') ?? '');
-        this.selectedSection = id ? +id : null;
+        this.selectedSectionId = id ? +id : null;
         this.loadQuestions();
       });
   }
 
   /**
    * With selected section ID fetch section questions from server
-   * TODO: load questions for section
    */
   async loadQuestions() {
-    if (!this.selectedSection) return;
+    if (!this.selectedSectionId) return;
+    this.questions = await lastValueFrom(this.questionService.getQuestions(this.selectedSectionId, this.getSortParams()));
+  }
 
-    this.questionsDisplay = this.questions.filter(q => q.sectionId === this.selectedSection);
+  getSortParams(): string[] {
+    let sortBy = this.sort.by.toString();
+    if (sortBy === "alphabetically") {
+      sortBy = 'title';
+    }
+    return [sortBy, this.sort.direction]
+  }
+
+  async openSortModal() {
+    this.sort = await this.sortModal.open(this.sort);
+    this.loadQuestions();
   }
 
   ngOnDestroy() {

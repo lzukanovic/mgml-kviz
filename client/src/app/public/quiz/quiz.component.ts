@@ -45,11 +45,13 @@ export class QuizComponent implements OnInit, OnDestroy {
       title: 'Kaj vam je bilo najbolj vsec na razstavi 1?',
       description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       type: "singleChoice",
+      content: "text",
       possibleAnswers: [
         {id: 0, text: 'metulji', selected: false, order: 0},
         {id: 1, text: 'clovesko telo', selected: false, order: 1},
         {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
-      ]
+      ],
+      createdAt: new Date()
     };
 
     for (const answer of this.question.possibleAnswers) {

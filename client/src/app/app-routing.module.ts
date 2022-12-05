@@ -27,12 +27,13 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'question',
+        path: 'section/:sectionId/question',
         children: [
           { path: '', redirectTo: '/console/section', pathMatch: 'full' },
           { path: 'new', component: QuestionComponent },
           { path: ':questionId', component: QuestionComponent },
           { path: ':questionId/code', component: QrCodeComponent },
+          // TODO  { path: 'statistics' },
         ]
       }
     ]

@@ -14,9 +14,16 @@ class SectionRepository {
     // });
   }
 
-  async getSections() {
+  async getSections(query) {
+    if (!query.length) {
+      query = ['title', 'ASC'];
+    }
     try {
-      const sections = await this.db.section.findAll();
+      const sections = await this.db.section.findAll({
+        order: [
+          query
+        ]
+      });
       logger.info('GET /sections :::' + sections.toString());
       return sections;
     } catch (err) {
@@ -39,7 +46,6 @@ class SectionRepository {
   async createSection(section) {
     let data = {};
     try {
-      console.log(section)
       data = await this.db.section.create(section);
       logger.info('POST /section :::' + data);
     } catch(err) {

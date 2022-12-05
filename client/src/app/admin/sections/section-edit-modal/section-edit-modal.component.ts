@@ -61,7 +61,6 @@ export class SectionEditModalComponent implements OnInit {
   async loadSection() {
     if (!this.sectionId) return;
     this.section = await lastValueFrom(this.sectionService.getSection(this.sectionId));
-    console.log(this.section);
     if (!this.section) return;
     this.form.patchValue(this.section);
   }
@@ -85,25 +84,23 @@ export class SectionEditModalComponent implements OnInit {
   }
 
   async save(): Promise<void> {
+    const data: Section = {
+      id: this.sectionId, // number or null
+      ...this.form.getRawValue()
+    }
+
     if (this.sectionId) {
-      const data = {
-        id: this.sectionId,
-        ...this.form.getRawValue()
-      }
       const res = await lastValueFrom(this.sectionService.updateSection(data))
       if (!res) {
         // TODO: error something went wrong with updating the section
       }
     } else {
-      const data = {
-        id: null,
-        ...this.form.getRawValue()
-      }
       const res = await lastValueFrom(this.sectionService.createSection(data))
       if (!res) {
         // TODO: error something went wrong with creating the section
       }
     }
+
     this.form.reset();
     this.modalRef.close();
   }

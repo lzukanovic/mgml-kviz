@@ -3,9 +3,9 @@ const sectionRepository  = require('../repository/section.repository');
 
 class SectionController {
 
-  async getSections() {
+  async getSections(query) {
     logger.info('Controller: getSections')
-    return await sectionRepository.getSections();
+    return await sectionRepository.getSections(query);
   }
 
   async getSection(sectionId) {
