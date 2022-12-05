@@ -1,9 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject, takeUntil} from "rxjs";
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {environment} from "../../../../environments/environment";
 import {Question} from "../../../shared/interfaces";
 import {SafeUrl} from "@angular/platform-browser";
+import {QuestionService} from "../../../services/question.service";
+import getBreakpoint from "../../../shared/breakpoint.util";
 
 
 @Component({
@@ -18,9 +20,18 @@ export class QrCodeComponent implements OnInit, OnDestroy {
   id!: number;
   url: string = "";
   qrCodeDownloadLink: SafeUrl = "";
+  deviceSize: number = getBreakpoint(window.innerWidth, true) as number;
 
+  // TODO: send via email function
 
-  constructor(private route: ActivatedRoute) { }
+  get qrSize(): number {
+    return this.scale(this.deviceSize, 1, 6, 200, 420);
+  }
+
+  constructor(
+    private route: ActivatedRoute,
+    private questionService: QuestionService,
+  ) { }
 
   ngOnInit(): void {
     // listen for question ID changes
@@ -33,26 +44,24 @@ export class QrCodeComponent implements OnInit, OnDestroy {
       });
   }
 
-  // TODO: get data from DB
   async loadQuestion() {
-    this.question = {
-      id: this.id,
-      sectionId: 1,
-      title: 'Kaj vam je bilo najbolj vsec na razstavi 1?',
-      description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      type: "singleChoice",
-      content: "text",
-      possibleAnswers: [
-        {id: 0, text: 'metulji', selected: false, order: 0},
-        {id: 1, text: 'clovesko telo', selected: false, order: 1},
-        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
-      ],
-      createdAt: new Date()
-    };
+    if (!this.id) return;
+
+    // sectionId is not used in data fetch, but is included in API url for consistency
+    this.question = await lastValueFrom(this.questionService.getQuestion(0, this.id));
+  }
+
+  scale(num: number, inMin: number, inMax: number, outMin: number, outMax: number) {
+    return (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
   }
 
   onChangeURL(url: SafeUrl) {
     this.qrCodeDownloadLink = url;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.deviceSize = getBreakpoint(event.target.innerWidth, true) as number;
   }
 
   ngOnDestroy() {

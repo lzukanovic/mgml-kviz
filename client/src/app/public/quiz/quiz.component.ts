@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
-import {Subject, takeUntil} from "rxjs";
+import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Question, QuestionType} from "../../shared/interfaces";
+import {Answer, Question, QuestionType} from "../../shared/interfaces";
+import {QuestionService} from "../../services/question.service";
 
 @Component({
   selector: 'app-quiz',
@@ -25,7 +26,11 @@ export class QuizComponent implements OnInit, OnDestroy {
   question!: Question;
   id!: number;
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private questionService: QuestionService
+  ) { }
 
   ngOnInit(): void {
     // listen for question ID changes
@@ -37,24 +42,21 @@ export class QuizComponent implements OnInit, OnDestroy {
       });
   }
 
-  // TODO: get data from DB
   async loadQuestion() {
-    this.question = {
-      id: this.id,
-      sectionId: 1,
-      title: 'Kaj vam je bilo najbolj vsec na razstavi 1?',
-      description: 'Dodatno pomožno besedilo za razumevanje vprašanja. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      type: "singleChoice",
-      content: "text",
-      possibleAnswers: [
-        {id: 0, text: 'metulji', selected: false, order: 0},
-        {id: 1, text: 'clovesko telo', selected: false, order: 1},
-        {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
-      ],
-      createdAt: new Date()
-    };
+    if (!this.id) return;
 
-    for (const answer of this.question.possibleAnswers) {
+    // sectionId is not used in data fetch, but is included in API url for consistency
+    this.question = await lastValueFrom(this.questionService.getQuestion(0, this.id));
+
+    // TODO: fill answers correctly
+    // this.form.patchValue();
+    const answers: Answer[] = [
+      {id: 0, text: 'metulji', selected: false, order: 0},
+      {id: 1, text: 'clovesko telo', selected: false, order: 1},
+      {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
+    ];
+
+    for (const answer of answers) {
       const fg = new FormGroup({
         id: new FormControl(answer.id),
         text: new FormControl(answer.text),

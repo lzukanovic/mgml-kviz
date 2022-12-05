@@ -1,0 +1,13 @@
+// XL devices
+@media (min-width: 1200px) {
+  button, a {
+    font-size: 1.2rem;
+  }
+}
+
+// XXL devices
+@media (min-width: 1400px) {
+  button, a {
+    font-size: 1.5rem;
+  }
+}
