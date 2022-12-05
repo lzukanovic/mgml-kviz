@@ -4,11 +4,12 @@ module.exports = (sequelize, DataTypes, Model) => {
 
   Section.init({
     // Model attributes are defined here
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
-    },
+    // TODO: removing this enables create calls to work since they have no id of object
+    // id: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   primaryKey: true
+    // },
     title: {
       type: DataTypes.STRING,
       allowNull: false

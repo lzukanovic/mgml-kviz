@@ -12,4 +12,20 @@ export class SectionService {
   getSections(): Observable<any> {
     return this.http.get('/api/section');
   }
+
+  getSection(sectionId: number): Observable<any> {
+    return this.http.get(`/api/section/${sectionId}`);
+  }
+
+  createSection(section: any): Observable<any> {
+    return this.http.post('/api/section', {section});
+  }
+
+  updateSection(section: any): Observable<any> {
+    return this.http.put('/api/section', {section});
+  }
+
+  deleteSection(sectionId: number): Observable<any> {
+    return this.http.delete(`/api/section/${sectionId}`);
+  }
 }
