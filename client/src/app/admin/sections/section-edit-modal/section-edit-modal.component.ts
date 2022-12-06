@@ -5,6 +5,7 @@ import {ConfirmModalComponent, ModalConfig} from "../../../shared/confirm-modal/
 import {Section} from "../../../shared/interfaces";
 import {SectionService} from "../../../services/section.service";
 import {lastValueFrom} from "rxjs";
+import getBreakpoint from "../../../shared/breakpoint.util";
 
 @Component({
   selector: 'app-section-edit-modal',
@@ -50,7 +51,8 @@ export class SectionEditModalComponent implements OnInit {
 
   open(sectionId: number | null): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      this.modalRef = this.modalService.open(this.modalContent);
+      const smallerDevice = getBreakpoint(window.innerWidth, true) < 2;
+      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice });
       this.modalRef.result.then(resolve, resolve);
 
       this.sectionId = sectionId;

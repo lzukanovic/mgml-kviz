@@ -4,6 +4,7 @@ import {Section} from "../../shared/interfaces";
 import {SectionService} from "../../services/section.service";
 import {lastValueFrom} from "rxjs";
 import {Sort, SortModalComponent} from "../../shared/sort-modal/sort-modal.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-sections',
@@ -16,12 +17,16 @@ export class SectionsComponent implements OnInit {
 
   @ViewChild('sortModal') sortModal!: SortModalComponent;
   // default sort parameters
-  sort: Sort = {
+  defaultSort: Sort = {
     by: "updatedAt",
     direction: "DESC"
   }
+  sort: Sort = this.defaultSort;
 
-  constructor(private sectionService: SectionService) { }
+  constructor(
+    private sectionService: SectionService,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     this.loadSections();
@@ -41,6 +46,9 @@ export class SectionsComponent implements OnInit {
 
   async openSortModal() {
     this.sort = await this.sortModal.open(this.sort);
+    if (!this.sort) {
+      this.sort = this.defaultSort;
+    }
     // reload sections after changes
     this.loadSections();
   }
@@ -50,6 +58,14 @@ export class SectionsComponent implements OnInit {
     await this.sectionEditModal.open(id);
 
     // reload sections after changes
-    this.loadSections();
+    await this.loadSections();
+
+    // check if selected section was deleted
+    if (id == null || isNaN(id)) return;
+
+    const index = this.sections.findIndex(s => s.id == id);
+    if (index >= 0) return;
+
+    this.router.navigate(['/console', 'section'])
   }
 }

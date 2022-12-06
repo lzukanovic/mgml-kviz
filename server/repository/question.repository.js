@@ -7,6 +7,26 @@ class QuestionRepository {
 
   constructor() {
     this.db = connect();
+    // TODO: For Development
+    // this.db.sequelize.sync({force: true})
+    // .then(async () => {
+    //   logger.info("Drop and re-sync db.");
+    //   await this.db.section.create({
+    //     title: 'Razstava Emona',
+    //     description: 'Najboljša razstava o rimskem mestu Emona, oz. bivša Ljubljana.'
+    //   });
+    //   await this.db.section.create({
+    //     title: 'Kmalu prihajajoča razstava',
+    //     description: 'To je opis neke nove razstave, ki se bo kmalu odprla!'
+    //   });
+    //   await this.db.question.create({
+    //     title: 'Iz katerega zgodovinskega obdobja je mesto Emona?',
+    //     description: 'Zgodovinska obdobja so na primer: kamena doba, bronasta doba, železna doba (1200-550 pnš) itd.',
+    //     sectionId: 1,
+    //     type: 'singleChoice',
+    //     content: 'text'
+    //   });
+    // });
   }
 
   async getQuestions(sectionId, query) {

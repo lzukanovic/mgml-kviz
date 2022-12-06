@@ -7,11 +7,6 @@ class SectionRepository {
 
   constructor() {
     this.db = connect();
-    // TODO: For Development
-    // This drops and recreates table!
-    // this.db.sequelize.sync({ force: true }).then(() => {
-    //   logger.info("Drop and re-sync db.");
-    // });
   }
 
   async getSections(query) {

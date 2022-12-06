@@ -3,6 +3,7 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {ConfirmModalComponent, ModalConfig} from "../../../shared/confirm-modal/confirm-modal.component";
 import {FormControl, FormGroup} from "@angular/forms";
 import {AnswersType} from "../../../shared/interfaces";
+import getBreakpoint from "../../../shared/breakpoint.util";
 
 @Component({
   selector: 'app-answer-edit-modal',
@@ -46,7 +47,8 @@ export class AnswerEditModalComponent implements OnInit {
 
   open(): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      this.modalRef = this.modalService.open(this.modalContent)
+      const smallerDevice = getBreakpoint(window.innerWidth, true) < 2;
+      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice });
       this.modalRef.result.then(resolve, resolve)
     });
 

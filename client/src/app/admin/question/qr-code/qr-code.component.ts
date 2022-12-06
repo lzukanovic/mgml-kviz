@@ -6,6 +6,7 @@ import {Question} from "../../../shared/interfaces";
 import {SafeUrl} from "@angular/platform-browser";
 import {QuestionService} from "../../../services/question.service";
 import getBreakpoint from "../../../shared/breakpoint.util";
+import {Location} from "@angular/common";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class QrCodeComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private location: Location,
     private questionService: QuestionService,
   ) { }
 
@@ -53,6 +55,10 @@ export class QrCodeComponent implements OnInit, OnDestroy {
 
   scale(num: number, inMin: number, inMax: number, outMin: number, outMax: number) {
     return (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   onChangeURL(url: SafeUrl) {

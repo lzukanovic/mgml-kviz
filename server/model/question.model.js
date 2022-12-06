@@ -1,36 +1,34 @@
 module.exports = (sequelize, DataTypes, Model) => {
 
-  class Question extends Model {}
+  class Question extends Model {
+    static associate(models) {
+      Question.belongsTo(models.section, { foreignKey: 'sectionId', targetKey: 'id' })
+    }
+  }
 
   Question.init({
     // Model attributes are defined here
-    // TODO: removing this enables create calls to work since they have no id of object
-    // id: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false,
-    //   primaryKey: true
-    // },
-    sectionId: {
+    id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      foreignKey: true
+      primaryKey: true,
+      autoIncrement: true,
+      unique: true,
     },
     title: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false
     },
     description: {
-      type: DataTypes.STRING
+      type: DataTypes.TEXT
     },
     type: {
       type: DataTypes.ENUM,
-      // update in postgres types also!
       values: ['singleChoice', 'multipleChoice'],
       allowNull: false
     },
     content: {
       type: DataTypes.ENUM,
-      // update in postgres types also!
       values: ['text', 'image'],
       allowNull: false
     },
@@ -39,12 +37,13 @@ module.exports = (sequelize, DataTypes, Model) => {
       allowNull: false
     },
     updatedAt: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: false
     },
   }, {
     // Other model options go here
     sequelize, // We need to pass the connection instance
-    modelName: 'question' // We need to choose the model name
+    modelName: 'question', // We need to choose the model name
   });
 
   return Question;

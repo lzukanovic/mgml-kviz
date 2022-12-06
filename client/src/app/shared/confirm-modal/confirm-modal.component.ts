@@ -1,5 +1,6 @@
 import {Component, Input, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import getBreakpoint from "../breakpoint.util";
 
 @Component({
   selector: 'app-confirm-modal',
@@ -16,7 +17,8 @@ export class ConfirmModalComponent {
 
   open(): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      this.modalRef = this.modalService.open(this.modalContent)
+      const smallerDevice = getBreakpoint(window.innerWidth, true) < 2;
+      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice });
       this.modalRef.result.then(resolve, resolve)
     });
   }
