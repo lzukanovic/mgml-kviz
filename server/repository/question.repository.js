@@ -8,8 +8,7 @@ class QuestionRepository {
   constructor() {
     this.db = connect();
     // TODO: For Development
-    // this.db.sequelize.sync({force: true})
-    // .then(async () => {
+    // this.db.sequelize.sync({force: true}).then(async () => {
     //   logger.info("Drop and re-sync db.");
     //   await this.db.section.create({
     //     title: 'Razstava Emona',
