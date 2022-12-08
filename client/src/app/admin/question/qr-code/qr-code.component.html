@@ -9,11 +9,19 @@
       <h4 class="text-center">{{question?.title}}</h4>
       <p *ngIf="question?.description as description" class="text-muted text-center mb-0">{{description}}</p>
       <qrcode [title]="question?.title" [qrdata]="url" (qrCodeURL)="onChangeURL($event)" [width]="qrSize" [errorCorrectionLevel]="'M'"></qrcode>
-      <div class="mx-3 align-self-stretch">
-        <a [href]="qrCodeDownloadLink" download="qrcode" class="btn btn-primary d-flex justify-content-center align-items-center">
-          <i class="bi bi-download me-2"></i>
-          <span>Prenesi</span>
-        </a>
+      <div class="row align-self-stretch">
+        <div class="col-12 col-md-6 mb-2">
+          <a [routerLink]="['/public', 'question', id]" class="btn btn-secondary d-flex flex-grow-1 justify-content-center align-items-center">
+            <i class="bi bi-arrow-right me-2"></i>
+            <span>Obišči</span>
+          </a>
+        </div>
+        <div class="col-12 col-md-6">
+          <a [href]="qrCodeDownloadLink" download="qrcode" class="btn btn-primary d-flex flex-grow-1 justify-content-center align-items-center">
+            <i class="bi bi-download me-2"></i>
+            <span>Prenesi</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
