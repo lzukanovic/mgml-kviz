@@ -12,8 +12,7 @@ export interface Question {
   title: string;
   description?: string;
   type: QuestionType;
-  content: AnswersType;
-  possibleAnswers: Answer[];
+  answers: Answer[];
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -25,10 +24,10 @@ export interface Answer {
   questionId?: number;
   text?: string;
   image?: string;
-  selected: boolean;
+  count: number;
   order: number;
 }
 
-export type AnswersType = 'text' | 'image';
-
-// TODO: match interfaces with backend!!!!
+export interface AnswerEdit extends Answer {
+  action: 'DELETE' | 'UPDATE' | 'CREATE';
+}

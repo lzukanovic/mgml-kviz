@@ -9,6 +9,7 @@ import {LoginComponent} from "./lock/login/login.component";
 import {AuthGuard} from "./services/auth.guard";
 import {QuizComponent} from "./public/quiz/quiz.component";
 import {QrCodeComponent} from "./admin/question/qr-code/qr-code.component";
+import {QuestionStatisticsComponent} from "./shared/question-statistics/question-statistics.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,7 +34,7 @@ const routes: Routes = [
           { path: 'new', component: QuestionComponent },
           { path: ':questionId', component: QuestionComponent },
           { path: ':questionId/code', component: QrCodeComponent },
-          // TODO  { path: 'statistics' },
+          { path: 'statistics', component: QuestionStatisticsComponent },
         ]
       }
     ]
@@ -42,7 +43,7 @@ const routes: Routes = [
     path: 'public/question/:questionId',
     children: [
       { path: '', component: QuizComponent },
-      // TODO  { path: 'statistics' },
+      { path: 'statistics', component: QuestionStatisticsComponent },
     ]
   },
   { path: '**', redirectTo: 'console/section', pathMatch: 'full' },

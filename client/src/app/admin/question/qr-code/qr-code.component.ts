@@ -50,7 +50,7 @@ export class QrCodeComponent implements OnInit, OnDestroy {
     if (!this.id) return;
 
     // sectionId is not used in data fetch, but is included in API url for consistency
-    this.question = await lastValueFrom(this.questionService.getQuestion(0, this.id));
+    this.question = await lastValueFrom(this.questionService.getQuestion(-1, this.id));
   }
 
   scale(num: number, inMin: number, inMax: number, outMin: number, outMax: number) {

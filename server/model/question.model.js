@@ -2,7 +2,16 @@ module.exports = (sequelize, DataTypes, Model) => {
 
   class Question extends Model {
     static associate(models) {
-      Question.belongsTo(models.section, { foreignKey: 'sectionId', targetKey: 'id' })
+      Question.belongsTo(models.section, { foreignKey: 'sectionId', targetKey: 'id' });
+      Question.hasMany(models.answer, {
+        foreignKey: {
+          name: 'questionId',
+          allowNull: false,
+        },
+        sourceKey: 'id',
+        onDelete: 'CASCADE',
+        onUpdate: 'NO ACTION'
+      });
     }
   }
 
@@ -27,11 +36,12 @@ module.exports = (sequelize, DataTypes, Model) => {
       values: ['singleChoice', 'multipleChoice'],
       allowNull: false
     },
-    content: {
-      type: DataTypes.ENUM,
-      values: ['text', 'image'],
-      allowNull: false
-    },
+    // TODO
+    // content: {
+    //   type: DataTypes.ENUM,
+    //   values: ['text', 'image'],
+    //   allowNull: false
+    // },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false

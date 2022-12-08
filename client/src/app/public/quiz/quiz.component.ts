@@ -2,8 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
 import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Answer, Question, QuestionType} from "../../shared/interfaces";
+import {Answer, Question} from "../../shared/interfaces";
 import {QuestionService} from "../../services/question.service";
+import {AnswerService} from "../../services/answer.service";
 
 @Component({
   selector: 'app-quiz',
@@ -16,20 +17,23 @@ export class QuizComponent implements OnInit, OnDestroy {
   form = new FormGroup({
     answers: new FormArray([], {validators: selectedAnswerValidator})
   });
-  get answers(): FormArray {
+  get answersForm(): FormArray {
     return this.form.get('answers') as FormArray;
   }
   getAnswerSelect(index: number): FormControl {
-    return this.answers.at(index).get('selected') as FormControl;
+    return this.answersForm.at(index).get('selected') as FormControl;
   }
 
   question!: Question;
+  answers: Answer[] = [];
   id!: number;
+  hasAnswered = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private answerService: AnswerService,
   ) { }
 
   ngOnInit(): void {
@@ -38,6 +42,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         this.id = parseInt(params.get('questionId') ?? '');
+        this.hasAnswered = this.checkIfQuestionAnswered()
         this.loadQuestion();
       });
   }
@@ -46,31 +51,55 @@ export class QuizComponent implements OnInit, OnDestroy {
     if (!this.id) return;
 
     // sectionId is not used in data fetch, but is included in API url for consistency
-    this.question = await lastValueFrom(this.questionService.getQuestion(0, this.id));
+    this.question = await lastValueFrom(this.questionService.getQuestion(-1, this.id));
+    this.answers = await lastValueFrom(this.answerService.getAnswers(-1, this.id));
 
-    // TODO: fill answers correctly
-    // this.form.patchValue();
-    const answers: Answer[] = [
-      {id: 0, text: 'metulji', selected: false, order: 0},
-      {id: 1, text: 'clovesko telo', selected: false, order: 1},
-      {id: 2, text: 'zdravstvni oddelek', selected: false, order: 2}
-    ];
-
-    for (const answer of answers) {
+    for (const answer of this.answers) {
       const fg = new FormGroup({
         id: new FormControl(answer.id),
         text: new FormControl(answer.text),
         image: new FormControl(answer.image),
-        selected: new FormControl(answer.selected),
-        order: new FormControl(answer.order)
+        order: new FormControl(answer.order),
+        selected: new FormControl(false),
       });
-      this.answers.push(fg);
+      if (this.hasAnswered) {
+        fg.disable();
+      }
+      this.answersForm.push(fg);
     }
   }
 
   async submit() {
-    // TODO: save answer
-    this.router.navigate(['/statistics']);
+    if (this.form.invalid) return;
+
+    const ids: number[] = this.answersForm.getRawValue().filter(a => a.selected).map(a => a.id);
+    const res = await lastValueFrom(this.answerService.incrementAnswers(-1, this.id, ids))
+    if (!res) {
+      // TODO: error something went wrong with updating
+    }
+
+    // mark question as answered on client device
+    this.setQuestionAsAnswered();
+
+    // navigate to statistics page
+    this.router.navigate(['statistics'], {relativeTo: this.route});
+  }
+
+  checkIfQuestionAnswered(): boolean {
+    if (!this.id) return false;
+
+    const answered: number[] = JSON.parse(localStorage.getItem('answered') ?? '[]');
+    return answered.includes(this.id);
+  }
+
+  setQuestionAsAnswered() {
+    if (!this.id) return;
+
+    const answered: number[] = JSON.parse(localStorage.getItem('answered') ?? '[]');
+    if (answered.includes(this.id)) return;
+
+    answered.push(this.id);
+    localStorage.setItem('answered', JSON.stringify(answered));
   }
 
   ngOnDestroy() {

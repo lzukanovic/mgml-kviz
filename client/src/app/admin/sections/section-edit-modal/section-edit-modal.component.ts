@@ -74,14 +74,14 @@ export class SectionEditModalComponent implements OnInit {
         // TODO: error something went wrong with deleting the section
       }
       this.form.reset();
-      this.modalRef.close();
+      this.modalRef.close(true);
     }
   }
 
   async dismiss(): Promise<void> {
     if (!this.form.dirty || (this.form.dirty && await this.unsavedChangesModal.open())) {
       this.form.reset();
-      this.modalRef.dismiss();
+      this.modalRef.dismiss(false);
     }
   }
 
@@ -104,6 +104,6 @@ export class SectionEditModalComponent implements OnInit {
     }
 
     this.form.reset();
-    this.modalRef.close();
+    this.modalRef.close(true);
   }
 }

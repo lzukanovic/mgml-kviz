@@ -15,7 +15,7 @@
     <button *ngIf="answerId" type="button" class="btn btn-danger" (click)="delete()">Izbriši</button>
     <div class="flex-grow-1"></div>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismiss()">Prekliči</button>
-    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!form.dirty">{{answerId ? 'Shrani' : 'Ustvari'}}</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!form.dirty">Potrdi</button>
   </div>
 </ng-template>
 

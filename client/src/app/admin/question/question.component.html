@@ -6,7 +6,6 @@
 <div class="container-fluid mt-2 pb-3">
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="row mb-3">
-<!--  TODO: remove if not needed    col-12 col-md-10 col-lg-8 col-xxl-6 -->
       <div class="col-12 col-lg-6 d-flex flex-column flex-grow-1">
         <h4 class="mb-3">Vprašanje</h4>
         <div class="mb-3">
@@ -56,38 +55,39 @@
             </label>
           </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Vsebina odgovora</label>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="text"
-              id="textAnswerRadio"
-              formControlName="content"
-            >
-            <label class="form-check-label" for="textAnswerRadio">
-              Besedilo
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="image"
-              id="imageAnswerRadio"
-              formControlName="content"
-            >
-            <label class="form-check-label" for="imageAnswerRadio">
-              Fotografija
-            </label>
-          </div>
-        </div>
+<!--        TODO: remove -->
+<!--        <div class="mb-3">-->
+<!--          <label class="form-label">Vsebina odgovora</label>-->
+<!--          <div class="form-check">-->
+<!--            <input-->
+<!--              class="form-check-input"-->
+<!--              type="radio"-->
+<!--              value="text"-->
+<!--              id="textAnswerRadio"-->
+<!--              formControlName="content"-->
+<!--            >-->
+<!--            <label class="form-check-label" for="textAnswerRadio">-->
+<!--              Besedilo-->
+<!--            </label>-->
+<!--          </div>-->
+<!--          <div class="form-check">-->
+<!--            <input-->
+<!--              class="form-check-input"-->
+<!--              type="radio"-->
+<!--              value="image"-->
+<!--              id="imageAnswerRadio"-->
+<!--              formControlName="content"-->
+<!--            >-->
+<!--            <label class="form-check-label" for="imageAnswerRadio">-->
+<!--              Fotografija-->
+<!--            </label>-->
+<!--          </div>-->
+<!--        </div>-->
         <div>
           <label class="form-label">Možni odgovori</label>
           <ul class="list-group">
             <li
-              *ngFor="let answer of possibleAnswersSorted; let i = index"
+              *ngFor="let answer of answersSorted; let i = index"
               class="list-group-item d-flex justify-content-between align-items-center"
             >
               <span>{{ answer.get("text")?.value }}</span>
@@ -156,11 +156,5 @@
   </form>
 </div>
 
-<app-answer-edit-modal
-  #answerEditModal
-  [answerId]="selectedEditAnswerId"
-  [answerType]="form.get('content')?.value"
-  (deleteEvent)="removeAnswerById(selectedEditAnswerId)"
-></app-answer-edit-modal>
-
-<app-confirm-modal [modalConfig]="deleteModalConfig" #deleteModal></app-confirm-modal>
+<app-answer-edit-modal #answerEditModal></app-answer-edit-modal>
+<app-confirm-modal #deleteModal [modalConfig]="deleteModalConfig"></app-confirm-modal>
