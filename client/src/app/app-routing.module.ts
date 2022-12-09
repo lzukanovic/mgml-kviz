@@ -34,7 +34,7 @@ const routes: Routes = [
           { path: 'new', component: QuestionComponent },
           { path: ':questionId', component: QuestionComponent },
           { path: ':questionId/code', component: QrCodeComponent },
-          { path: 'statistics', component: QuestionStatisticsComponent },
+          { path: ':questionId/statistics', component: QuestionStatisticsComponent },
         ]
       }
     ]

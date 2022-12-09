@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Answer, Question} from "../../shared/interfaces";
 import {QuestionService} from "../../services/question.service";
 import {AnswerService} from "../../services/answer.service";
+import {CelebrateService} from "../../services/celebrate.service";
 
 @Component({
   selector: 'app-quiz',
@@ -34,6 +35,7 @@ export class QuizComponent implements OnInit, OnDestroy {
     private router: Router,
     private questionService: QuestionService,
     private answerService: AnswerService,
+    public celebrateService: CelebrateService
   ) { }
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         this.id = parseInt(params.get('questionId') ?? '');
-        this.hasAnswered = this.checkIfQuestionAnswered()
+        this.hasAnswered = this.checkIfQuestionAnswered();
         this.loadQuestion();
       });
   }
@@ -81,8 +83,12 @@ export class QuizComponent implements OnInit, OnDestroy {
     // mark question as answered on client device
     this.setQuestionAsAnswered();
 
-    // navigate to statistics page
-    this.router.navigate(['statistics'], {relativeTo: this.route});
+    // update UI elements
+    this.hasAnswered = true;
+    this.form.disable();
+
+    // animation
+    this.celebrateService.startCelebration();
   }
 
   checkIfQuestionAnswered(): boolean {

@@ -23,6 +23,7 @@
     "angularx-qrcode": "^14.0.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.2",
+    "canvas-confetti": "^1.6.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -32,6 +33,7 @@
     "@angular/cli": "^14.2.10",
     "@angular/compiler-cli": "^14.2.12",
     "@angular/localize": "^14.2.10",
+    "@types/canvas-confetti": "^1.6.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~4.0.0",

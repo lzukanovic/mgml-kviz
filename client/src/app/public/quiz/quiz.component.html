@@ -30,7 +30,8 @@
                 </div>
                 <span *ngIf="hasAnswered" class="invalid-feedback d-block mt-1">Na to vprašanje ste že odgovorili.</span>
               </div>
-              <button type="submit" class="btn btn-secondary w-100 mb-2" *ngIf="hasAnswered" routerLink="./statistics">Ogled statistike</button>
+
+              <button type="button" class="btn btn-secondary w-100 mb-2" *ngIf="hasAnswered" routerLink="./statistics">Ogled statistike</button>
               <button type="submit" class="btn btn-primary w-100" [disabled]="form.invalid || hasAnswered">Odgovori</button>
             </ng-container>
           </form>
@@ -39,3 +40,5 @@
     </div>
   </div>
 </div>
+
+<app-celebrate></app-celebrate>
