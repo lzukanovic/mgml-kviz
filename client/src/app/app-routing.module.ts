@@ -10,6 +10,9 @@ import {AuthGuard} from "./services/auth.guard";
 import {QuizComponent} from "./public/quiz/quiz.component";
 import {QrCodeComponent} from "./admin/question/qr-code/qr-code.component";
 import {QuestionStatisticsComponent} from "./shared/question-statistics/question-statistics.component";
+import {
+  QuestionStatisticsWrapperComponent
+} from "./public/question-statistics-wrapper/question-statistics-wrapper.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -43,7 +46,7 @@ const routes: Routes = [
     path: 'public/question/:questionId',
     children: [
       { path: '', component: QuizComponent },
-      { path: 'statistics', component: QuestionStatisticsComponent },
+      { path: 'statistics', component: QuestionStatisticsWrapperComponent },
     ]
   },
   { path: '**', redirectTo: 'console/section', pathMatch: 'full' },

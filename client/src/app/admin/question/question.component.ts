@@ -193,7 +193,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
     // save, create or delete answers if question was saved successfully
     if (questionResponse) {
       const res = await lastValueFrom(this.answerService.saveAnswers(this.sectionId, this.questionId, this.answersForm.getRawValue()))
-      console.log(res)
       if (!res) {
         // TODO: error something went wrong with answers save
       }

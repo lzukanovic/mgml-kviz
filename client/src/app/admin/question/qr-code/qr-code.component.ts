@@ -23,8 +23,6 @@ export class QrCodeComponent implements OnInit, OnDestroy {
   qrCodeDownloadLink: SafeUrl = "";
   deviceSize: number = getBreakpoint(window.innerWidth, true) as number;
 
-  // TODO: send via email function
-
   get qrSize(): number {
     return this.scale(this.deviceSize, 1, 6, 200, 420);
   }

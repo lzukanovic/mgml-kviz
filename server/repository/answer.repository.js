@@ -1,5 +1,6 @@
 const { connect } = require('../config/db.config');
 const logger = require('../logger/logger');
+const populate = require("../migration/populate");
 
 class AnswerRepository {
 
@@ -8,33 +9,9 @@ class AnswerRepository {
   constructor() {
     this.db = connect();
     // TODO: For Development
-    // this.db.sequelize.sync({force: true}).then(async () => {
+    // this.db.sequelize.sync({force: true}).then(() => {
     //   logger.info("Drop and re-sync db.");
-    //   await this.db.section.create({
-    //     title: 'Razstava Emona',
-    //     description: 'Najboljša razstava o rimskem mestu Emona, oz. bivša Ljubljana.'
-    //   });
-    //   await this.db.section.create({
-    //     title: 'Kmalu prihajajoča razstava',
-    //     description: 'To je opis neke nove razstave, ki se bo kmalu odprla!'
-    //   });
-    //   await this.db.question.create({
-    //     title: 'Iz katerega zgodovinskega obdobja je mesto Emona?',
-    //     description: 'Zgodovinska obdobja so na primer: kamena doba, bronasta doba, železna doba (1200-550 pnš) itd.',
-    //     sectionId: 1,
-    //     type: 'singleChoice',
-    //     content: 'text'
-    //   });
-    //   await this.db.answer.create({
-    //     text: 'Srednji vek',
-    //     questionId: 1,
-    //     order: 0
-    //   });
-    //   await this.db.answer.create({
-    //     text: 'Kamena doba',
-    //     questionId: 1,
-    //     order: 1
-    //   });
+    //   populate(this.db);
     // });
   }
 
@@ -110,7 +87,7 @@ class AnswerRepository {
     let data = {};
     try {
       data = await this.db.answer.bulkCreate(answers, {
-        updateOnDuplicate: ["text", "image", "order", "count", "updatedAt"]
+        updateOnDuplicate: ["text", "image", "order", "updatedAt"]
       });
       logger.info(`PUT /section/.../question/${answers[0]?.questionId}/answer/${answers.map(a => a.id)} :::` + data);
     } catch(err) {

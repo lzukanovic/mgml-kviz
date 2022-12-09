@@ -1,5 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Answer, Question} from "../../shared/interfaces";
@@ -16,13 +24,18 @@ export class QuizComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   form = new FormGroup({
-    answers: new FormArray([], {validators: selectedAnswerValidator})
+    multipleChoiceAnswers: new FormArray([]),
+    singleChoiceAnswer: new FormControl()
   });
-  get answersForm(): FormArray {
-    return this.form.get('answers') as FormArray;
+
+  get multipleChoiceAnswersForm(): FormArray {
+    return this.form.get('multipleChoiceAnswers') as FormArray;
   }
-  getAnswerSelect(index: number): FormControl {
-    return this.answersForm.at(index).get('selected') as FormControl;
+  getMultipleChoiceAnswerSelect(index: number): FormControl {
+    return this.multipleChoiceAnswersForm.at(index).get('selected') as FormControl;
+  }
+  get singleChoiceAnswerForm(): FormControl {
+    return this.form.get('singleChoiceAnswer') as FormControl;
   }
 
   question!: Question;
@@ -35,7 +48,8 @@ export class QuizComponent implements OnInit, OnDestroy {
     private router: Router,
     private questionService: QuestionService,
     private answerService: AnswerService,
-    public celebrateService: CelebrateService
+    public celebrateService: CelebrateService,
+    private cdRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
@@ -64,17 +78,35 @@ export class QuizComponent implements OnInit, OnDestroy {
         order: new FormControl(answer.order),
         selected: new FormControl(false),
       });
-      if (this.hasAnswered) {
-        fg.disable();
-      }
-      this.answersForm.push(fg);
+      this.multipleChoiceAnswersForm.push(fg);
     }
+
+    this.setupForm();
+  }
+
+  setupForm() {
+    if (this.hasAnswered) {
+      this.form.disable();
+    }
+    if (this.question.type === "singleChoice") {
+      this.singleChoiceAnswerForm.setValidators(Validators.required);
+    }
+    if (this.question.type === "multipleChoice") {
+      this.multipleChoiceAnswersForm.setValidators(selectedAnswerValidator);
+    }
+    this.cdRef.detectChanges();
   }
 
   async submit() {
     if (this.form.invalid) return;
 
-    const ids: number[] = this.answersForm.getRawValue().filter(a => a.selected).map(a => a.id);
+    let ids: number[] = [];
+    if (this.question.type === "singleChoice") {
+      ids.push(this.singleChoiceAnswerForm.value)
+    }
+    if (this.question.type === "multipleChoice") {
+      ids = this.multipleChoiceAnswersForm.value.filter((a: any) => a.selected).map((a: any) => a.id)
+    }
     const res = await lastValueFrom(this.answerService.incrementAnswers(-1, this.id, ids))
     if (!res) {
       // TODO: error something went wrong with updating

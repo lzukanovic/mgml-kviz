@@ -1,1 +1,15 @@
-<p>question-statistics works!</p>
+<button type="button" class="btn d-flex align-items-center mx-n1 mt-3" (click)="goBack()">
+  <i class="bi bi-arrow-left fs-4 me-2"></i>
+  <span>Nazaj</span>
+</button>
+
+<div class="container-fluid py-1">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-8 d-flex flex-column justify-content-center align-items-stretch">
+      <h4 class="text-center">{{question?.title}}</h4>
+      <p *ngIf="question?.description as description" class="text-muted text-center mb-5">{{description}}</p>
+
+      <div echarts [options]="option" [merge]="mergeOption" style="height: 400px"></div>
+    </div>
+  </div>
+</div>

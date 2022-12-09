@@ -5,6 +5,7 @@ import { SortModalComponent } from './sort-modal/sort-modal.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { QuestionStatisticsComponent } from './question-statistics/question-statistics.component';
 import { CelebrateComponent } from './celebrate/celebrate.component';
+import {NgxEchartsModule} from "ngx-echarts";
 
 
 
@@ -17,7 +18,8 @@ import { CelebrateComponent } from './celebrate/celebrate.component';
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxEchartsModule.forRoot({echarts: () => import('echarts')}),
   ],
   exports: [
     ConfirmModalComponent,
