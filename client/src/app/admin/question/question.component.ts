@@ -103,8 +103,8 @@ export class QuestionComponent implements OnInit, OnDestroy {
     const res = await this.answerEditModal.open(this.questionId, null);
 
     // check action
-    if (res.action === "CREATE") {
-      const maxOrder = Math.max(...this.answersForm.getRawValue().map(a => a.order));
+    if (res?.action === "CREATE") {
+      const maxOrder = Math.max(...this.answersForm.getRawValue().map(a => a.order), -1);
       const fg = new FormGroup({
         id: new FormControl(null),
         text: new FormControl(res.text),
@@ -192,7 +192,11 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
     // save, create or delete answers if question was saved successfully
     if (questionResponse) {
-      const res = await lastValueFrom(this.answerService.saveAnswers(this.sectionId, this.questionId, this.answersForm.getRawValue()))
+      const res = await lastValueFrom(this.answerService.saveAnswers(
+        this.sectionId,
+        this.questionId || questionResponse.id,
+        this.answersForm.getRawValue()
+      ))
       if (!res) {
         // TODO: error something went wrong with answers save
       }

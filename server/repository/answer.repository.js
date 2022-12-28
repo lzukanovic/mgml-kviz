@@ -8,7 +8,7 @@ class AnswerRepository {
 
   constructor() {
     this.db = connect();
-    // TODO: For Development
+    // TODO: Development only
     // this.db.sequelize.sync({force: true}).then(() => {
     //   logger.info("Drop and re-sync db.");
     //   populate(this.db);

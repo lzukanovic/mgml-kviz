@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
+import {AuthenticationService} from "../../services/authentication.service";
+import {UserDetails} from "../../shared/interfaces";
 
 @Component({
   selector: 'app-top-bar',
@@ -7,14 +9,14 @@ import { Router } from "@angular/router";
   styleUrls: ['./top-bar.component.scss']
 })
 export class TopBarComponent implements OnInit {
-
-  constructor(private router: Router) { }
+  user: UserDetails | null = null;
+  constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.user = this.auth.getUserDetails();
   }
 
   logout() {
-    // TODO: delete token
-    this.router.navigate(['/login'])
+    this.auth.logout();
   }
 }

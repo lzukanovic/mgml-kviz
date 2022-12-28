@@ -9,9 +9,7 @@
             <h4>Prijava</h4>
             <div class="text-muted small mb-3">Prosimo vnesite uporabniško ime in geslo generiranega uporabniškega računa.</div>
 
-            <div class="alert alert-danger" *ngIf="error" role="alert">
-              Napačno uporabniško ime ali geslo.
-            </div>
+            <div class="alert alert-danger" *ngIf="error" role="alert">{{error}}</div>
 
             <div class="mb-3">
               <label for="username" class="form-label">Uporabniško ime</label>

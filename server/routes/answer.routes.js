@@ -1,76 +1,165 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const answerController = require('../controller/answer.controller')
+const questionController = require('../controller/question.controller')
 const rateLimit = require("express-rate-limit");
+const {authJwt} = require("../middleware");
 
 const app = express();
 app.use(bodyParser.json());
 
-// get all answers by section id and question id
-app.get("/section/:sectionId/question/:questionId/answer", (req, res) => {
-  answerController.getAnswers(req.params.questionId).then(data => res.json(data));
-})
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
 
-// get answer by id
-app.get("/section/:sectionId/question/:questionId/answer/:answerId", (req, res) => {
-  answerController.getAnswer(req.params.answerId).then(data => res.json(data));
-})
+/*
+* {{ Public API }}
+* get all answers by section id and question id
+*/
+app.get("/section/:sectionId/question/:questionId/answer",
+  async (req, res) => {
+    // check for invalid id
+    if (isNaN(parseInt(req.params.questionId))) {
+      return res.status(400).json({message: 'Neveljavni podatki'});
+    }
 
-// save answers (create, update or delete)
-app.put("/section/:sectionId/question/:questionId/answer", async (req, res) => {
-  const answers = req.body.answers;
-  for (const answer of answers) {
-    answer.questionId = parseInt(req.params.questionId);
+    // check for exception while accessing DB
+    let fetch = {}
+    try {
+      fetch = await answerController.getAnswers(req.params.questionId);
+      return res.status(200).json(fetch);
+    } catch (err) {
+      return res.status(500).json({message: 'Napaka pri pridobivanju odgovorov.', ...err});
+    }
   }
+)
 
-  const original = await answerController.getAnswers(req.params.questionId);
-  let created = [], deleted = [], updated = [];
+/*
+* get answer by id
+*/
+app.get("/section/:sectionId/question/:questionId/answer/:answerId",
+  (req, res, next) => authJwt.verifyToken(req, res, next),
+  async (req, res) => {
+    // check for invalid id
+    if (isNaN(parseInt(req.params.answerId))) {
+      return res.status(400).json({message: 'Neveljavni podatki'});
+    }
 
-  // find created
-  created = answers.filter(a => !a.id);
-  if (created.length) {
-    created = await answerController.createAnswers(created);
+    // check for exception while accessing DB
+    let fetch = {}
+    try {
+      fetch = await answerController.getAnswer(req.params.answerId);
+    } catch (err) {
+      return res.status(500).json({message: 'Napaka pri pridobivanju odgovora.', ...err});
+    }
+
+    // check if anything found
+    if (fetch == null) {
+      return res.status(404).json({message: 'Odgovor ne obstaja'});
+    } else {
+      return res.status(200).json(fetch);
+    }
   }
+)
 
-  // find deleted
-  deleted = onlyInLeft(original, answers, isSameAnswer);
-  if (deleted.length) {
-    const resD = await answerController.deleteAnswers(deleted.map(d => d.id));
+/*
+* save answers (create, update or delete)
+*/
+app.put("/section/:sectionId/question/:questionId/answer",
+  (req, res, next) => authJwt.verifyToken(req, res, next),
+  async (req, res) => {
+    const answers = req.body.answers;
+    for (const answer of answers) {
+      answer.questionId = parseInt(req.params.questionId);
+
+      // check for not null requirements
+      if ((!answer.text && !answer.text.length && !answer.image) || isNaN(answer.order)) {
+        return res.status(400).json({message: 'Neveljavni podatki'});
+      }
+    }
+
+    const original = await answerController.getAnswers(req.params.questionId);
+    let created = [], deleted = [], updated = [];
+
+    // find created
+    created = answers.filter(a => !a.id);
+    if (created.length) {
+      created = await answerController.createAnswers(created);
+    }
+
+    // find deleted
+    deleted = onlyInLeft(original, answers, isSameAnswer);
+    if (deleted.length) {
+      const resD = await answerController.deleteAnswers(deleted.map(d => d.id));
+    }
+
+    // find updated/existing
+    updated = answers.filter(a => a.id);
+    if (updated.length) {
+      updated = await answerController.updateAnswers(updated);
+    }
+
+    return res.json(updated.concat(created));
   }
-
-  // find updated/existing
-  updated = answers.filter(a => a.id);
-  if (updated.length) {
-    updated = await answerController.updateAnswers(updated);
-  }
-
-  return res.json(updated.concat(created));
-})
+)
 
 // Limit 1 user answer per minute
 const userAnswerLimiter = rateLimit({
   windowMs: 1000 * 60, // 1 minutes
-  max: 1, // Limit each IP to 1 requests per `window`
+  max: 3, // Limit each IP to 1 requests per `window`
   message: 'Preveliko število odgovorov, poskusite zopet kasneje.',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
-// save user answer
-app.put("/section/:sectionId/question/:questionId/answer/count", userAnswerLimiter, async (req, res) => {
-  const answerIds = req.body.answers;
-  const original = await answerController.getAnswers(req.params.questionId);
-  const answersData = [];
-  for (const answer of original) {
-    if (answerIds.findIndex(id => id === answer.id) >= 0) {
-      answersData.push({
-        id: answer.id,
-        questionId: parseInt(answer.questionId),
-        count: answer.count + 1
-      });
+
+
+/*
+* {{ Public API }}
+* save user answer
+*/
+app.put("/section/:sectionId/question/:questionId/answer/count",
+  userAnswerLimiter,
+  async (req, res) => {
+    // check for not null requirements
+    if (isNaN(parseInt(req.params.questionId)) || !req.body.answers.length) {
+      return res.status(400).json({message: 'Neveljavni podatki'});
+    }
+
+    const answerIds = req.body.answers;
+
+    // check if question type matches number of answers
+    const question = await questionController.getQuestion(req.params.questionId);
+    if (question.type === 'singleChoice' && answerIds.length > 1) {
+      return res.status(400).json({message: 'Dovoljen samo en odgovor!'});
+    }
+
+    // increment answers
+    const originalAnswers = await answerController.getAnswers(req.params.questionId);
+    const answersData = [];
+    for (const answer of originalAnswers) {
+      if (answerIds.findIndex(id => id === answer.id) >= 0) {
+        answersData.push({
+          id: answer.id,
+          questionId: parseInt(answer.questionId),
+          count: parseInt(answer.count) + 1
+        });
+      }
+    }
+
+    // check for exception while accessing DB
+    let fetch = {}
+    try {
+      fetch = await answerController.incrementAnswers(answersData);
+      return res.status(200).json(fetch);
+    } catch (err) {
+      return res.status(500).json({message: 'Napaka pri posodabljanju odgovorov na vprašanje.', ...err});
     }
   }
-  answerController.incrementAnswers(answersData).then(data => res.json(data));
-})
+)
 
 const isSameAnswer = (a, b) => a.id === b.id;
 

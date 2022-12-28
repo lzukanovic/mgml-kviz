@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {AuthenticationService} from "../../services/authentication.service";
+import {TokenPayload} from "../../shared/interfaces";
 
 @Component({
   selector: 'app-login',
@@ -8,7 +10,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  error = false;
+  error = null;
   form = new FormGroup({
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
@@ -21,14 +23,26 @@ export class LoginComponent implements OnInit {
     return this.form.get('password') as FormControl;
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
   }
 
   submit() {
-    // TODO: verify login or show error
-    // TODO: login service
-    this.router.navigate(['/console', 'section'])
+    if (!this.username.getRawValue() || !this.password.getRawValue()) return;
+
+    const credentials: TokenPayload = {
+      username: this.username.getRawValue() ?? '',
+      password: this.password.getRawValue() ?? ''
+    };
+
+    this.auth.login(credentials).subscribe({
+      next: () => {
+        this.router.navigate(['/console', 'section']);
+      },
+      error: (err) => {
+        this.error = err;
+      }
+    })
   }
 }

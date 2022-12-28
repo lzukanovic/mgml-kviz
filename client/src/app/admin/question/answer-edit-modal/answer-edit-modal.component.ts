@@ -39,7 +39,7 @@ export class AnswerEditModalComponent implements OnInit {
 
   form: FormGroup = new FormGroup({
     text: new FormControl(''),
-    image: new FormControl(''),
+    image: new FormControl(null),
   })
 
   constructor(
@@ -89,8 +89,6 @@ export class AnswerEditModalComponent implements OnInit {
   }
 
   async save(): Promise<void> {
-    if (!this.questionId) return;
-
     const data: Answer = {
       id: this.answerId, // number or null
       questionId: this.questionId,

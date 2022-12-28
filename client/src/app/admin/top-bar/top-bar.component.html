@@ -7,8 +7,8 @@
 
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Pozdravljeni, admin
+        <a class="nav-link dropdown-toggle" [class.disabled]="!user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Pozdravljeni, {{user?.username}}
         </a>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" (click)="logout()">Odjava</a></li>

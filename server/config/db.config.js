@@ -26,6 +26,7 @@ const connect = () => {
   db.section = require("../model/section.model")(sequelize, DataTypes, Model);
   db.question = require("../model/question.model")(sequelize, DataTypes, Model);
   db.answer = require("../model/answer.model")(sequelize, DataTypes, Model);
+  db.user = require("../model/user.model")(sequelize, DataTypes, Model);
 
   if (db.section.associate) {
     db.section.associate(db);

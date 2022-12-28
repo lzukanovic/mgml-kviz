@@ -31,3 +31,18 @@ export interface Answer {
 export interface AnswerEdit extends Answer {
   action: 'DELETE' | 'UPDATE' | 'CREATE';
 }
+
+export interface UserDetails {
+  id: number;
+  username: string;
+  exp: number;
+}
+
+export interface TokenResponse {
+  token: string;
+}
+
+export interface TokenPayload {
+  username: string;
+  password: string;
+}
