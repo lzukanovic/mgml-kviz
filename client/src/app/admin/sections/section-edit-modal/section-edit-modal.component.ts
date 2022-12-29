@@ -30,7 +30,7 @@ export class SectionEditModalComponent implements OnInit {
   @ViewChild('unsavedChangesModal') unsavedChangesModal!: ConfirmModalComponent;
   unsavedChangesModalConfig: ModalConfig = {
     modalTitle: 'Neshranjene spremembe',
-    modalBody: 'Če nadaljujete boste izgubili vaše spremembe?',
+    modalBody: 'Ali ste prepričani, da želite nadaljevati? Vse neshranjene spremembe bodo izgubljene.',
     dismissButtonLabel: 'Prekliči',
     closeButtonLabel: 'Potrdi',
     closeButtonStyle: 'btn-primary'
@@ -52,7 +52,7 @@ export class SectionEditModalComponent implements OnInit {
   open(sectionId: number | null): Promise<boolean> {
     return new Promise<boolean>(resolve => {
       const smallerDevice = getBreakpoint(window.innerWidth, true) < 2;
-      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice });
+      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice, backdrop: 'static' });
       this.modalRef.result.then(resolve, resolve);
 
       this.sectionId = sectionId;

@@ -13,6 +13,7 @@ import {QuestionStatisticsComponent} from "./shared/question-statistics/question
 import {
   QuestionStatisticsWrapperComponent
 } from "./public/question-statistics-wrapper/question-statistics-wrapper.component";
+import {PendingChangesGuard} from "./services/pending-changes.guard";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -34,8 +35,8 @@ const routes: Routes = [
         path: 'section/:sectionId/question',
         children: [
           { path: '', redirectTo: '/console/section', pathMatch: 'full' },
-          { path: 'new', component: QuestionComponent },
-          { path: ':questionId', component: QuestionComponent },
+          { path: 'new', component: QuestionComponent, canDeactivate: [PendingChangesGuard] },
+          { path: ':questionId', component: QuestionComponent, canDeactivate: [PendingChangesGuard] },
           { path: ':questionId/code', component: QrCodeComponent },
           { path: ':questionId/statistics', component: QuestionStatisticsComponent },
         ]

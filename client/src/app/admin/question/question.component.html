@@ -10,7 +10,14 @@
         <h4 class="mb-3">Vprašanje</h4>
         <div class="mb-3">
           <label for="questionTitle" class="form-label">Naslov</label>
-          <input type="text" class="form-control" id="questionTitle" formControlName="title">
+          <input
+            type="text"
+            class="form-control"
+            id="questionTitle"
+            formControlName="title"
+            [class.is-invalid]="form.get('title')?.touched && form.get('title')?.invalid"
+          >
+          <div class="invalid-feedback">Naslov je obvezen.</div>
         </div>
         <div class="flex-grow-1 mb-5 mb-lg-0">
           <label for="questionDescription" class="form-label">Opis</label>
@@ -37,6 +44,8 @@
               value="singleChoice"
               id="singleChoiceRadio"
               formControlName="type"
+              [class.is-invalid]="form.get('type')?.invalid"
+              required
             >
             <label class="form-check-label" for="singleChoiceRadio">
               Odgovor z eno izbiro
@@ -49,93 +58,61 @@
               value="multipleChoice"
               id="multipleChoiceRadio"
               formControlName="type"
+              [class.is-invalid]="form.get('type')?.invalid"
+              required
             >
             <label class="form-check-label" for="multipleChoiceRadio">
               Odgovor z več izbirami
             </label>
+            <div class="invalid-feedback">Izberite tip odgovora.</div>
           </div>
         </div>
-<!--        TODO: remove -->
-<!--        <div class="mb-3">-->
-<!--          <label class="form-label">Vsebina odgovora</label>-->
-<!--          <div class="form-check">-->
-<!--            <input-->
-<!--              class="form-check-input"-->
-<!--              type="radio"-->
-<!--              value="text"-->
-<!--              id="textAnswerRadio"-->
-<!--              formControlName="content"-->
-<!--            >-->
-<!--            <label class="form-check-label" for="textAnswerRadio">-->
-<!--              Besedilo-->
-<!--            </label>-->
-<!--          </div>-->
-<!--          <div class="form-check">-->
-<!--            <input-->
-<!--              class="form-check-input"-->
-<!--              type="radio"-->
-<!--              value="image"-->
-<!--              id="imageAnswerRadio"-->
-<!--              formControlName="content"-->
-<!--            >-->
-<!--            <label class="form-check-label" for="imageAnswerRadio">-->
-<!--              Fotografija-->
-<!--            </label>-->
-<!--          </div>-->
-<!--        </div>-->
         <div>
           <label class="form-label">Možni odgovori</label>
           <ul class="list-group">
             <li
               *ngFor="let answer of answersSorted; let i = index"
-              class="list-group-item d-flex justify-content-between align-items-center"
+              class="list-group-item d-flex justify-content-between align-items-start"
             >
-              <span>{{ answer.get("text")?.value }}</span>
-              <div>
-                <button type="button" class="btn px-1 py-0" (click)="editAnswer(i)">
+              <span *ngIf="answer.get('text')?.value as text">{{ text }}</span>
+              <span *ngIf="!answer.get('text')?.value" class="text-muted">Brez besedila</span>
+
+              <div class="d-flex flex-nowrap">
+                <img *ngIf="imagesMap.has(answer.get('id')?.value)" [src]="imagesMap.get(answer.get('id')?.value)"
+                     class="rounded mx-1" alt="" style="height: 30px; width: 30px; object-fit: cover;">
+                <button
+                  type="button"
+                  class="btn px-1 py-0"
+                  (click)="editAnswer(i)"
+                  placement="auto"
+                  ngbTooltip="Uredi odgovor"
+                  [openDelay]="800"
+                >
                   <i class="bi bi-pencil"></i>
                 </button>
-                <button type="button" class="btn px-1 py-0" (click)="removeAnswer(i)">
+                <button
+                  type="button"
+                  class="btn px-1 py-0"
+                  (click)="removeAnswer(i)"
+                  placement="auto"
+                  ngbTooltip="Odstrani odgovor"
+                  [openDelay]="800"
+                >
                   <i class="bi bi-x-lg"></i>
                 </button>
               </div>
-<!--              TODO: remove -->
-<!--              <div-->
-<!--                class="btn-group"-->
-<!--                [attr.role]="'group' + answer.id"-->
-<!--                aria-label="Radio toggle button group to choose either text or image answer"-->
-<!--              >-->
-<!--                <input-->
-<!--                  [formControl]="getAnswerParamForm(i, 'isImage')"-->
-<!--                  [id]="'btnRadioText' + answer.id"-->
-<!--                  [name]="'btnRadio' + answer.id"-->
-<!--                  [value]="false"-->
-<!--                  autocomplete="off"-->
-<!--                  class="btn-check"-->
-<!--                  type="radio"-->
-<!--                >-->
-<!--                <label class="btn btn-outline-primary" [for]="'btnRadioText' + answer.id">-->
-<!--                  <i class="bi bi-fonts"></i>-->
-<!--                </label>-->
-
-<!--                <input-->
-<!--                  [formControl]="getAnswerParamForm(i, 'isImage')"-->
-<!--                  [id]="'btnRadioImage' + answer.id"-->
-<!--                  [name]="'btnRadio' + answer.id"-->
-<!--                  [value]="true"-->
-<!--                  autocomplete="off"-->
-<!--                  class="btn-check"-->
-<!--                  type="radio"-->
-<!--                >-->
-<!--                <label class="btn btn-outline-primary" [for]="'btnRadioImage' + answer.id">-->
-<!--                  <i class="bi bi-image"></i>-->
-<!--                </label>-->
-<!--              </div>-->
             </li>
-            <li class="list-group-item d-flex justify-content-center align-items-center new-answer" (click)="addAnswer()">
+            <li class="list-group-item d-flex justify-content-center align-items-center new-answer"
+                (click)="addAnswer()"
+                placement="bottom"
+                ngbTooltip="Dodaj odgovor"
+                [openDelay]="1000"
+                [class.is-invalid]="!loadingAnswers && form.get('answers')?.invalid"
+            >
               <i class="bi bi-plus-lg text-muted"></i>
             </li>
           </ul>
+          <div *ngIf="!loadingAnswers" [class.d-block]="form.get('answers')?.invalid" class="invalid-feedback">Dodajte vsaj en odgovor.</div>
         </div>
       </div>
     </div>
@@ -145,19 +122,44 @@
 
       <div class="flex-grow-1"></div>
 
-      <button *ngIf="!!questionId" type="button" class="btn px-1 py-0 fs-4" [routerLink]="['/public', 'question', questionId]">
+      <button
+        *ngIf="!!questionId"
+        type="button"
+        class="btn px-1 py-0 fs-4"
+        [routerLink]="['/public', 'question', questionId]"
+        placement="top"
+        ngbTooltip="Pojdi na vprašanje"
+      >
         <i class="bi bi-ui-checks-grid"></i>
       </button>
-      <button *ngIf="!!questionId" type="button" class="btn px-1 py-0 fs-4" routerLink="./statistics">
+      <button
+        *ngIf="!!questionId"
+        type="button"
+        class="btn px-1 py-0 fs-4"
+        routerLink="./statistics"
+        placement="top"
+        ngbTooltip="Prikaži statistiko"
+      >
         <i class="bi bi-bar-chart-line"></i>
       </button>
-      <button *ngIf="!!questionId" type="button" class="btn px-1 py-0 fs-4" routerLink="./code">
+      <button
+        *ngIf="!!questionId"
+        type="button"
+        class="btn px-1 py-0 fs-4"
+        routerLink="./code"
+        placement="top"
+        ngbTooltip="Prikaži QR kodo"
+      >
         <i class="bi bi-qr-code"></i>
       </button>
-      <button type="submit" class="btn btn-primary" [disabled]="!form.dirty">{{ !!questionId ? 'Shrani' : 'Ustvari' }}</button>
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || !form.dirty || uploading">
+        <span *ngIf="uploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        {{ !!questionId ? 'Shrani' : 'Ustvari' }}
+      </button>
     </div>
   </form>
 </div>
 
 <app-answer-edit-modal #answerEditModal></app-answer-edit-modal>
-<app-confirm-modal #deleteModal [modalConfig]="deleteModalConfig"></app-confirm-modal>
+<app-confirm-modal #deleteQuestionModal [modalConfig]="deleteQuestionModalConfig"></app-confirm-modal>
+<app-confirm-modal #deleteAnswerModal [modalConfig]="deleteAnswerModalConfig"></app-confirm-modal>

@@ -18,7 +18,13 @@ module.exports = (sequelize, DataTypes, Model) => {
     text: {
       type: DataTypes.TEXT,
     },
-    image: {
+    imageName: {
+      type: DataTypes.STRING
+    },
+    imageType: {
+      type: DataTypes.STRING
+    },
+    imageData: {
       type: DataTypes.BLOB
     },
     order: {

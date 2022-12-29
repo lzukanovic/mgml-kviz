@@ -74,7 +74,7 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
     for (const answer of this.answers) {
       data.push({
         value: answer.count,
-        name: answer.text ?? ''
+        name: answer.text || answer.imageName
       })
     }
 

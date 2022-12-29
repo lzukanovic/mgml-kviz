@@ -23,9 +23,17 @@ export interface Answer {
   id: number;
   questionId?: number;
   text?: string;
-  image?: string;
+  image?: File;
+  imageName?: string;
+  imageType?: string;
+  imageData?: NodeJsBuffer;
   count: number;
   order: number;
+}
+
+interface NodeJsBuffer {
+  type: string;
+  data: Uint8Array;
 }
 
 export interface AnswerEdit extends Answer {

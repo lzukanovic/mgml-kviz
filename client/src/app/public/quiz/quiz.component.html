@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column align-items-stretch" novalidate>
-            <img src="/assets/logo-mgml-color.svg" class="mx-auto" alt="MGML logo">
+            <img src="/assets/logo-mgml-color.svg" class="mx-auto logo" alt="MGML logo">
 
             <h4 class="mb-3">Vprašanje</h4>
             <ng-container *ngIf="question">
@@ -35,6 +35,11 @@
 
                   <label class="form-check-label" [for]="'answer' + answer.id">
                     {{answer.text}}
+                  </label>
+
+                  <label [for]="'answer' + answer.id" class="d-block">
+                    <img *ngIf="imagesMap.has(answer.id)" [src]="imagesMap.get(answer.id)"
+                         class="rounded answer-image" alt="">
                   </label>
                 </div>
                 <div *ngIf="!hasAnswered" class="invalid-feedback" [class.d-block]="form.invalid">

@@ -1,9 +1,14 @@
 .container-fluid {
   background-color: #EAECEF;
 }
-img {
+.logo {
   height: 100%;
   width: clamp(5rem, 30vw, 9rem);
+}
+.answer-image {
+  height: 100%;
+  width: clamp(5rem, 30vw, 9rem);
+  object-fit: cover;
 }
 
 @media (max-width: 300px) {

@@ -18,6 +18,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         let message = '';
         let header = 'Napaka';
+        console.log(error)
         if (error.error instanceof ErrorEvent) {
           // Client side error
           message = error.error.message;

@@ -6,16 +6,35 @@
   <div class="modal-body">
     <form [formGroup]="form">
       <div class="mb-3">
-        <label for="sectionTitle" class="form-label">Besedilo</label>
-        <input type="text" class="form-control" id="sectionTitle" formControlName="text" ngbAutofocus required>
+        <label for="answerText" class="form-label">Besedilo</label>
+        <input type="text" class="form-control" id="answerText" formControlName="text"
+               [class.is-invalid]="form.errors?.['bothMissing'] && (form.touched || form.dirty)" ngbAutofocus>
+      </div>
+      <div class="mb-3">
+        <label for="answerImage" class="form-label">Slika</label>
+        <div class="d-flex">
+          <input type="file" class="form-control" id="answerImage" name="image"
+                 [class.is-invalid]="form.errors?.['bothMissing'] && (form.touched || form.dirty)"
+                 accept="image/png, image/gif, image/jpeg" (change)="uploadFile($event)">
+          <button *ngIf="preview && preview !== null" type="button" class="btn ms-1" (click)="resetImage()"
+                  placement="top" ngbTooltip="Odstrani sliko">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+
+        <div *ngIf="preview && preview !== null" class="mt-2">
+          <img class="img-fluid d-block mx-auto" [src]="preview" alt="Answer image">
+        </div>
       </div>
     </form>
+    <div [class.d-block]="form.errors?.['bothMissing'] && (form.touched || form.dirty)"
+         class="invalid-feedback">Odgovoru dodajte besedilo ali sliko.</div>
   </div>
   <div class="modal-footer">
     <button *ngIf="answerId" type="button" class="btn btn-danger" (click)="delete()">Izbriši</button>
     <div class="flex-grow-1"></div>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismiss()">Prekliči</button>
-    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!form.dirty">Potrdi</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid || !form.dirty">Potrdi</button>
   </div>
 </ng-template>
 

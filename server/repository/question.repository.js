@@ -37,6 +37,7 @@ class QuestionRepository {
       logger.info(`GET /question/${questionId} :::` + data);
     } catch(err) {
       logger.error(`GET /question/${questionId} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -48,6 +49,7 @@ class QuestionRepository {
       logger.info(`POST /section/${question.sectionId}/question/${question.id} :::` + data);
     } catch(err) {
       logger.error(`POST /section/${question.sectionId}/question/${question.id} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -63,6 +65,7 @@ class QuestionRepository {
       logger.info(`PUT /section/${question.sectionId}/question/${question.id} :::` + data);
     } catch(err) {
       logger.error(`PUT /section/${question.sectionId}/question/${question.id} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -78,6 +81,7 @@ class QuestionRepository {
       logger.info(`DELETE /section/.../question/${questionId} :::` + data);
     } catch(err) {
       logger.error(`DELETE /section/.../question/${questionId} :::` + err);
+      throw new Error(err);
     }
     return data;
   }

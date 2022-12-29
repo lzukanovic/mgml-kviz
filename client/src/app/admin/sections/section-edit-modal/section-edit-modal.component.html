@@ -7,7 +7,16 @@
     <form [formGroup]="form">
       <div class="mb-3">
         <label for="sectionTitle" class="form-label">Naslov</label>
-        <input type="text" class="form-control" id="sectionTitle" formControlName="title" ngbAutofocus required>
+        <input
+          type="text"
+          class="form-control"
+          id="sectionTitle"
+          formControlName="title"
+          [class.is-invalid]="form.get('title')?.touched && form.get('title')?.invalid"
+          ngbAutofocus
+          required
+        >
+        <div class="invalid-feedback">Naslov je obvezen.</div>
       </div>
       <div class="mb-3">
         <label for="sectionDescription" class="form-label">Opis</label>

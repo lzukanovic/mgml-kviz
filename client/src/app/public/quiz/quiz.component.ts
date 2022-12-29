@@ -22,6 +22,7 @@ import {CelebrateService} from "../../services/celebrate.service";
 })
 export class QuizComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  imagesMap = new Map();
 
   form = new FormGroup({
     multipleChoiceAnswers: new FormArray([]),
@@ -71,17 +72,19 @@ export class QuizComponent implements OnInit, OnDestroy {
     this.answers = await lastValueFrom(this.answerService.getAnswers(-1, this.id));
 
     for (const answer of this.answers) {
+      if (answer.imageType && answer.imageData) {
+        answer.image = this.answerService.bufferToFile(answer.imageName, answer.imageType, answer.imageData?.data) as File;
+      }
+
       const fg = new FormGroup({
         id: new FormControl(answer.id),
-        text: new FormControl(answer.text),
-        image: new FormControl(answer.image),
-        order: new FormControl(answer.order),
         selected: new FormControl(false),
       });
       this.multipleChoiceAnswersForm.push(fg);
     }
 
     this.setupForm();
+    this.showImagePreviews();
   }
 
   setupForm() {
@@ -95,6 +98,19 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.multipleChoiceAnswersForm.setValidators(selectedAnswerValidator);
     }
     this.cdRef.detectChanges();
+  }
+
+  showImagePreviews() {
+    this.imagesMap.clear();
+    for (const answer of this.answers) {
+      if (!answer.image) continue;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagesMap.set(answer.id, reader.result as string);
+      }
+      reader.readAsDataURL(answer.image);
+    }
   }
 
   async submit() {

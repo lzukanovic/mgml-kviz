@@ -18,7 +18,7 @@ export class ConfirmModalComponent {
   open(): Promise<boolean> {
     return new Promise<boolean>(resolve => {
       const smallerDevice = getBreakpoint(window.innerWidth, true) < 2;
-      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice });
+      this.modalRef = this.modalService.open(this.modalContent, { centered: smallerDevice, backdrop: "static" });
       this.modalRef.result.then(resolve, resolve)
     });
   }

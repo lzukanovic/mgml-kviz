@@ -34,6 +34,7 @@ class SectionRepository {
       logger.info(`GET /section/${sectionId} :::` + data);
     } catch(err) {
       logger.error(`GET /section/${sectionId} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -45,6 +46,7 @@ class SectionRepository {
       logger.info('POST /section :::' + data);
     } catch(err) {
       logger.error('POST /section :::' + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -60,6 +62,7 @@ class SectionRepository {
       logger.info('PUT /section :::' + data);
     } catch(err) {
       logger.error('PUT /section :::' + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -75,6 +78,7 @@ class SectionRepository {
       logger.info(`DELETE /section/${sectionId} :::` + data);
     } catch(err) {
       logger.error(`DELETE /section/${sectionId} :::` + err);
+      throw new Error(err);
     }
     return data;
   }

@@ -5,4 +5,8 @@
   &:hover {
     background-color: rgba(0, 0, 0, 0.08);
   }
+
+  &.is-invalid {
+    border-color: var(--bs-danger);
+  }
 }

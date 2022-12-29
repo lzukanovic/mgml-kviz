@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -12,23 +12,34 @@ import {AnswerEditModalComponent} from "./answer-edit-modal/answer-edit-modal.co
 import {ConfirmModalComponent, ModalConfig} from "../../shared/confirm-modal/confirm-modal.component";
 import {QuestionService} from "../../services/question.service";
 import {AnswerService} from "../../services/answer.service";
+import { v4 as uuidv4 } from 'uuid';
+import {ComponentCanDeactivate} from "../../services/pending-changes.guard";
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.scss']
 })
-export class QuestionComponent implements OnInit, OnDestroy {
-  // TODO: add navigation listener and show modal for unsaved changes!
-  // TODO: add form validation in template!
+export class QuestionComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
   private destroy$ = new Subject<void>();
+  imagesMap = new Map();
+  loadingAnswers = true;
+  uploading = false;
 
   @ViewChild('answerEditModal') answerEditModal!: AnswerEditModalComponent;
 
-  @ViewChild('deleteModal') deleteModal!: ConfirmModalComponent;
-  deleteModalConfig: ModalConfig = {
+  @ViewChild('deleteQuestionModal') deleteQuestionModal!: ConfirmModalComponent;
+  deleteQuestionModalConfig: ModalConfig = {
     modalTitle: 'Izbriši',
     modalBody: 'Ali ste prepričani, da želite izbrisati vprašanje? Vse slike in dodani odgovori vezani na vprašanje bodo tudi izbrisani.',
+    dismissButtonLabel: 'Prekliči',
+    closeButtonLabel: 'Potrdi'
+  };
+
+  @ViewChild('deleteAnswerModal') deleteAnswerModal!: ConfirmModalComponent;
+  deleteAnswerModalConfig: ModalConfig = {
+    modalTitle: 'Izbriši',
+    modalBody: 'Ali ste prepričani, da želite izbrisati odgovor? Vsa dosedaj zbrana statistika za odgovor bo tudi izbrisana.',
     dismissButtonLabel: 'Prekliči',
     closeButtonLabel: 'Potrdi'
   };
@@ -97,6 +108,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
       this.answersForm.removeAt(index);
     }
     this.answersForm.markAsDirty();
+    this.showImagePreviews();
   }
 
   async addAnswer() {
@@ -113,13 +125,29 @@ export class QuestionComponent implements OnInit, OnDestroy {
       });
       this.answersForm.push(fg);
       this.answersForm.markAsDirty();
+      this.showImagePreviews();
     }
   }
 
-  removeAnswer(index: number) {
-    this.answersForm.removeAt(index);
-    this.answersForm.markAsDirty();
-    this.updateOrder();
+  showImagePreviews() {
+    this.imagesMap.clear();
+    for (const answer of this.answersForm.getRawValue()) {
+      if (!answer.image) continue;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagesMap.set(answer.id, reader.result as string);
+      }
+      reader.readAsDataURL(answer.image);
+    }
+  }
+
+  async removeAnswer(index: number) {
+    if (await this.deleteAnswerModal.open()) {
+      this.answersForm.removeAt(index);
+      this.answersForm.markAsDirty();
+      this.updateOrder();
+    }
   }
 
   updateOrder() {
@@ -134,19 +162,28 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   async loadAnswers() {
+    this.loadingAnswers = true;
     this.answersForm.clear();
     this.answers = await lastValueFrom(this.answerService.getAnswers(this.sectionId, this.questionId));
+    this.loadingAnswers = false;
 
     this.form.patchValue(this.question);
     for (const answer of this.answers) {
+      let file = null;
+      if (answer.imageType && answer.imageData) {
+        file = this.answerService.bufferToFile(answer.imageName, answer.imageType, answer.imageData?.data)
+      }
+
       const fg = new FormGroup({
         id: new FormControl(answer.id),
         text: new FormControl(answer.text),
-        image: new FormControl(answer.image),
+        image: new FormControl(file),
         order: new FormControl(answer.order)
       });
       this.answersForm.push(fg);
     }
+
+    this.showImagePreviews();
   }
 
   /*
@@ -161,7 +198,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   async delete() {
-    if (this.sectionId && this.questionId && await this.deleteModal.open()) {
+    if (this.sectionId && this.questionId && await this.deleteQuestionModal.open()) {
       const res = await lastValueFrom(this.questionService.deleteQuestion(this.sectionId, this.questionId))
       if (!res) {
         // TODO: error something went wrong with deleting
@@ -175,6 +212,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
       id: this.questionId, // number or null
       ...this.form.getRawValue()
     }
+    this.uploading = true;
     let questionResponse!: Question;
 
     // save or create question
@@ -192,21 +230,41 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
     // save, create or delete answers if question was saved successfully
     if (questionResponse) {
+      const formData: any = new FormData();
+      const answersData = this.answersForm.getRawValue();
+
+      for (const answer of answersData) {
+        // for new answers create temporary id to which images can be matched
+        if (isNaN(parseInt(answer.id))) {
+          answer.id = uuidv4();
+        }
+        if (!answer.image) continue;
+        formData.append('image'+answer.id, answer.image as File);
+      }
+      formData.append('answers', JSON.stringify(answersData));
+
       const res = await lastValueFrom(this.answerService.saveAnswers(
         this.sectionId,
         this.questionId || questionResponse.id,
-        this.answersForm.getRawValue()
+        formData
       ))
       if (!res) {
         // TODO: error something went wrong with answers save
       }
     }
+    this.uploading = false;
 
     // navigate to question page if new question
     if (!this.questionId && questionResponse) {
       this.router.navigate(['/console', 'section', this.sectionId, 'question', questionResponse.id]);
     }
     this.form.markAsPristine();
+  }
+
+  @HostListener('window:beforeunload')
+  canDeactivate(): boolean {
+    if (!this.form) return true;
+    return !this.form.dirty || !this.uploading;
   }
 
   goBack() {

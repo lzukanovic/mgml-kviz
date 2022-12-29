@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes, Model) => {
       values: ['singleChoice', 'multipleChoice'],
       allowNull: false
     },
-    // TODO
+    // TODO: remove
     // content: {
     //   type: DataTypes.ENUM,
     //   values: ['text', 'image'],

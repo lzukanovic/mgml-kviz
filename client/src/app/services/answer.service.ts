@@ -22,15 +22,20 @@ export class AnswerService {
       );
   }
 
-  saveAnswers(sectionId: number, questionId: number, answers: Answer[]): Observable<any> {
+  saveAnswers(sectionId: number, questionId: number, answers: FormData): Observable<any> {
     return this.http.put(
       `/api/section/${sectionId}/question/${questionId}/answer`,
-      {answers},
+      answers,
       { headers: { Authorization: `Bearer ${this.auth.getToken()}` }}
     );
   }
 
   incrementAnswers(sectionId: number, questionId: number, answerIds: number[]): Observable<any> {
     return this.http.put(`/api/section/${sectionId}/question/${questionId}/answer/count`, {answers: answerIds});
+  }
+
+  bufferToFile(name: string | undefined | null, type: string, buffer: number[] | Uint8Array): File {
+    const blob = new Blob([new Uint8Array(buffer)]);
+    return new File([blob], name || 'blob', {type});
   }
 }

@@ -40,6 +40,7 @@ class AnswerRepository {
       logger.info(`GET /section/.../question/.../answer/${answerId} :::` + data);
     } catch(err) {
       logger.error(`GET /section/.../question/.../answer/${answerId} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -63,6 +64,7 @@ class AnswerRepository {
       logger.info(`POST /section/.../question/${answers[0]?.questionId}/answers :::` + data);
     } catch(err) {
       logger.error(`POST /section/.../question/${answers[0]?.questionId}/answers :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -87,11 +89,12 @@ class AnswerRepository {
     let data = {};
     try {
       data = await this.db.answer.bulkCreate(answers, {
-        updateOnDuplicate: ["text", "image", "order", "updatedAt"]
+        updateOnDuplicate: ["text", "imageName", "imageType", "imageData", "order", "updatedAt"]
       });
       logger.info(`PUT /section/.../question/${answers[0]?.questionId}/answer/${answers.map(a => a.id)} :::` + data);
     } catch(err) {
       logger.error(`PUT /section/.../question/${answers[0]?.questionId}/answer/${answers.map(a => a.id)} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -123,6 +126,7 @@ class AnswerRepository {
       logger.info(`DELETE /section/.../question/.../${answerIds} :::` + data);
     } catch(err) {
       logger.error(`DELETE /section/.../question/.../${answerIds} :::` + err);
+      throw new Error(err);
     }
     return data;
   }
@@ -136,6 +140,7 @@ class AnswerRepository {
       logger.info(`PUT count /section/.../question/${answers[0]?.questionId}/answer/${answers.map(a => a.id)} :::` + data);
     } catch(err) {
       logger.error(`PUT count /section/.../question/${answers[0]?.questionId}/answer/${answers.map(a => a.id)} :::` + err);
+      throw new Error(err);
     }
     return data;
   }

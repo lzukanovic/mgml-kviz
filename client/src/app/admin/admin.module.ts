@@ -13,6 +13,7 @@ import { QuestionComponent } from './question/question.component';
 import { AnswerEditModalComponent } from './question/answer-edit-modal/answer-edit-modal.component';
 import { QrCodeComponent } from './question/qr-code/qr-code.component';
 import {QRCodeModule} from "angularx-qrcode";
+import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 
 
 
@@ -28,12 +29,13 @@ import {QRCodeModule} from "angularx-qrcode";
     AnswerEditModalComponent,
     QrCodeComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
-    SharedModule,
-    QRCodeModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        ReactiveFormsModule,
+        SharedModule,
+        QRCodeModule,
+        NgbTooltipModule,
+    ]
 })
 export class AdminModule { }

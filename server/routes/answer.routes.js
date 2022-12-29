@@ -4,9 +4,11 @@ const answerController = require('../controller/answer.controller')
 const questionController = require('../controller/question.controller')
 const rateLimit = require("express-rate-limit");
 const {authJwt} = require("../middleware");
+const fileUpload = require('express-fileupload');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(fileUpload({}));
 
 app.use((req, res, next) => {
   res.header(
@@ -72,13 +74,25 @@ app.get("/section/:sectionId/question/:questionId/answer/:answerId",
 app.put("/section/:sectionId/question/:questionId/answer",
   (req, res, next) => authJwt.verifyToken(req, res, next),
   async (req, res) => {
-    const answers = req.body.answers;
+    const answers = JSON.parse(req.body.answers);
+
     for (const answer of answers) {
       answer.questionId = parseInt(req.params.questionId);
 
       // check for not null requirements
-      if ((!answer.text && !answer.text.length && !answer.image) || isNaN(answer.order)) {
+      if ((!(answer.text && answer.text.length) && !answer.image) || isNaN(parseInt(answer.order)) || isNaN(answer.questionId)) {
         return res.status(400).json({message: 'Neveljavni podatki'});
+      }
+
+      // set image data
+      if (req.files && req.files['image'+answer.id]) {
+        answer.imageName = req.files['image'+answer.id].name;
+        answer.imageType = req.files['image'+answer.id].mimetype;
+        answer.imageData = req.files['image'+answer.id].data;
+      } else {
+        answer.imageName = null;
+        answer.imageType = null;
+        answer.imageData = null;
       }
     }
 
@@ -86,21 +100,35 @@ app.put("/section/:sectionId/question/:questionId/answer",
     let created = [], deleted = [], updated = [];
 
     // find created
-    created = answers.filter(a => !a.id);
-    if (created.length) {
-      created = await answerController.createAnswers(created);
+    created = onlyInLeft(answers, original, isSameAnswer);
+    // reset any temporary ids
+    created.forEach(c => c.id = null);
+    try {
+      if (created.length) {
+        created = await answerController.createAnswers(created);
+      }
+    } catch (err) {
+      return res.status(500).json({message: 'Napaka pri ustvarjanju novih odgovorov.', ...err});
     }
 
     // find deleted
     deleted = onlyInLeft(original, answers, isSameAnswer);
-    if (deleted.length) {
-      const resD = await answerController.deleteAnswers(deleted.map(d => d.id));
+    try {
+      if (deleted.length) {
+        const resD = await answerController.deleteAnswers(deleted.map(d => d.id));
+      }
+    } catch (err) {
+      return res.status(500).json({message: 'Napaka pri brisanju odgovorov.', ...err});
     }
 
     // find updated/existing
     updated = answers.filter(a => a.id);
-    if (updated.length) {
-      updated = await answerController.updateAnswers(updated);
+    try {
+      if (updated.length) {
+        updated = await answerController.updateAnswers(updated);
+      }
+    } catch (err) {
+      return res.status(500).json({message: 'Napaka pri posodabljanju odgovorov.', ...err});
     }
 
     return res.json(updated.concat(created));
