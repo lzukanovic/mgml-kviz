@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {EChartsOption} from "echarts";
-import {lastValueFrom, Subject, takeUntil} from "rxjs";
+import {interval, lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {Answer, Question} from "../interfaces";
 import {QuestionService} from "../../services/question.service";
@@ -19,13 +19,14 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
   answers: Answer[] = [];
   id!: number;
 
-  option: EChartsOption = {
+  optionPie: EChartsOption = {
     tooltip: {
       trigger: 'item'
     },
     legend: {
       orient: 'horizontal',
-      align: "auto"
+      align: "left",
+      padding: 0,
     },
     series: [
       {
@@ -41,7 +42,40 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
       }
     ]
   };
-  mergeOption: any;
+  optionBar: EChartsOption = {
+    tooltip: {
+      trigger: 'axis'
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [
+      {
+        type: 'category',
+        axisTick: {
+          alignWithLabel: true
+        }
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        name: 'Število odgovorov'
+      }
+    ],
+    series: [
+      {
+        name: 'Število odgovorov',
+        type: 'bar',
+        barWidth: '60%',
+      }
+    ]
+  };
+  mergeOptionPie: any;
+  mergeOptionBar: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,8 +83,6 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
     private questionService: QuestionService,
     private answerService: AnswerService,
   ) { }
-
-  // TODO: periodic refresh of answer data!!!
 
   ngOnInit(): void {
     // listen for question ID changes
@@ -60,6 +92,9 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
         this.id = parseInt(params.get('questionId') ?? '');
         this.loadQuestion();
       });
+
+    // auto refresh
+    interval(60000).pipe(takeUntil(this.destroy$)).subscribe(() => this.loadQuestion());
   }
 
   async loadQuestion() {
@@ -78,7 +113,8 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
       })
     }
 
-    this.mergeOption = {series: [{ data }]}
+    this.mergeOptionPie = {series: [{ data }]}
+    this.mergeOptionBar = {xAxis: [{data: this.answers.map(a => a.text || a.imageName)}], series: [{ data: this.answers.map(a => a.count)}]}
   }
 
   goBack() {

@@ -8,6 +8,7 @@ import { CelebrateComponent } from './celebrate/celebrate.component';
 import {NgxEchartsModule} from "ngx-echarts";
 import { ToastsContainerComponent } from './toasts-container/toasts-container.component';
 import {NgbToastModule} from "@ng-bootstrap/ng-bootstrap";
+import { LoadingOverlayComponent } from './loading-overlay/loading-overlay.component';
 
 
 
@@ -18,6 +19,7 @@ import {NgbToastModule} from "@ng-bootstrap/ng-bootstrap";
     QuestionStatisticsComponent,
     CelebrateComponent,
     ToastsContainerComponent,
+    LoadingOverlayComponent,
   ],
   imports: [
     CommonModule,
@@ -31,6 +33,7 @@ import {NgbToastModule} from "@ng-bootstrap/ng-bootstrap";
     QuestionStatisticsComponent,
     CelebrateComponent,
     ToastsContainerComponent,
+    LoadingOverlayComponent,
   ]
 })
 export class SharedModule { }

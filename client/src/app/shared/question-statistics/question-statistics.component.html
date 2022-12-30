@@ -9,7 +9,9 @@
       <h4 class="text-center">{{question?.title}}</h4>
       <p *ngIf="question?.description as description" class="text-muted text-center mb-5">{{description}}</p>
 
-      <div echarts [options]="option" [merge]="mergeOption" style="height: 400px"></div>
+      <div class="mb-3" echarts [options]="optionPie" [merge]="mergeOptionPie" style="height: 400px"></div>
+
+      <div class="mb-3" echarts [options]="optionBar" [merge]="mergeOptionBar" style="height: 400px"></div>
     </div>
   </div>
 </div>
