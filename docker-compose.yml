@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  client:
+    build:
+      context: ./client
+    ports:
+      - "80:80"
+    container_name: mgml-client-cont
+    networks:
+      - mgml-network
+    depends_on:
+      - server
+    links:
+      - server
+
+  server:
+    build:
+      context: ./server
+    ports:
+      - "${PORT}:${PORT}"
+    container_name: mgml-server-cont
+    networks:
+      - mgml-network
+    depends_on:
+      - pg_db
+    links:
+      - pg_db
+    restart: always
+    environment:
+      - PG_HOST=${PG_HOST}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - PG_DB=${PG_DB}
+      - PG_PORT=${PG_PORT}
+      - PORT=${PORT}
+      - SECRET=${SECRET}
+
+  pg_db:
+    image: postgres
+    ports:
+      - "${PG_PORT}:${PG_PORT}"
+    container_name: mgml-postgres-cont
+    networks:
+      - mgml-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DB}
+
+networks:
+  mgml-network:
+    driver: bridge
+
+volumes:
+  pgdata:

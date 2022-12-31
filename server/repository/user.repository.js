@@ -11,25 +11,25 @@ class UserRepository {
   }
 
   async register(req, res) {
-    let user = {};
+    let account = {};
     try {
-      // create user account
+      // create account
       const {salt, hash} = authJwt.setPassword(req.body.password)
-      user = await this.db.user.create({
+      account = await this.db.account.create({
         username: req.body.username,
         salt,
         hash,
       });
 
       // generate token
-      const payload = {id: user.id, username: user.username};
+      const payload = {id: account.id, username: account.username};
       const token = authJwt.generateToken(payload);
 
       // respond
-      logger.info(`/register ::: username: ${user.username}, hash: ${user.hash}, salt: ${user.salt}`);
+      logger.info(`/register ::: username: ${account.username}, hash: ${account.hash}, salt: ${account.salt}`);
       res.status(201).send({
-        id: user.id,
-        username: user.username,
+        id: account.id,
+        username: account.username,
         token
       });
     } catch(err) {
@@ -39,17 +39,17 @@ class UserRepository {
   }
 
   async login(req, res) {
-    let user = {};
+    let account = {};
     try {
-      // get user
-      user = await this.db.user.findOne({
+      // get account
+      account = await this.db.account.findOne({
         where: {
           username: req.body.username
         }
       });
 
-      // user not found
-      if (!user) {
+      // account not found
+      if (!account) {
         return res.status(404).send({
           token: null,
           message: "Napačno uporabniško ime ali geslo!"
@@ -57,7 +57,7 @@ class UserRepository {
       }
 
       // verify login
-      const passwordIsValid = authJwt.verifyPassword(req.body.password, user.salt, user.hash)
+      const passwordIsValid = authJwt.verifyPassword(req.body.password, account.salt, account.hash)
 
       // incorrect credentials
       if (!passwordIsValid) {
@@ -68,14 +68,14 @@ class UserRepository {
       }
 
       // generate token
-      const payload = {id: user.id, username: user.username};
+      const payload = {id: account.id, username: account.username};
       const token = authJwt.generateToken(payload);
 
       // respond
-      logger.info(`/login ::: username: ${user.username}, token: ${token}`);
+      logger.info(`/login ::: username: ${account.username}, token: ${token}`);
       res.status(200).send({
-        id: user.id,
-        username: user.username,
+        id: account.id,
+        username: account.username,
         token
       });
     } catch(err) {

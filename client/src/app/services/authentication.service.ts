@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {TokenPayload, TokenResponse, UserDetails} from "../shared/interfaces";
 import {map, Observable} from "rxjs";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class AuthenticationService {
   }
 
   private request(type: 'login'|'register', user?: TokenPayload): Observable<any> {
-    const base = this.http.post<TokenResponse>(`/api/${type}`, user);
+    const base = this.http.post<TokenResponse>(`${environment.apiUrl}/api/${type}`, user);
 
     return base.pipe(
       map((data: TokenResponse) => {

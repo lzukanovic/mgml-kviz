@@ -1,18 +1,18 @@
 const { connect } = require("../config/db.config");
 const logger = require("../logger/logger");
 const db = connect()
-const User = db.user;
+const Account = db.account;
 
 checkDuplicateUsername = async (req, res, next) => {
-  let user = {};
+  let account = {};
   try {
-    user = await User.findOne({
+    account = await Account.findOne({
       where: {
         username: req.body.username
       }
     });
 
-    if (user) {
+    if (account) {
       res.status(400).send({
         message: "Napaka! Uporabniško ime že obstaja."
       });

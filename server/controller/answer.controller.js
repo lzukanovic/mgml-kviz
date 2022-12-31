@@ -13,33 +13,15 @@ class AnswerController {
     return await answerRepository.getAnswer(answerId);
   }
 
-  // TODO: remove
-  // async createAnswer(answer) {
-  //   logger.info('Controller: createAnswer ' + answer);
-  //   return await answerRepository.createAnswer(answer);
-  // }
-
   async createAnswers(answers) {
     logger.info('Controller: createAnswers ' + answers);
     return await answerRepository.createAnswers(answers);
   }
 
-  // TODO: remove
-  // async updateAnswer(answer) {
-  //   logger.info('Controller: updateAnswer ' + answer);
-  //   return await answerRepository.updateAnswer(answer);
-  // }
-
   async updateAnswers(answers) {
     logger.info('Controller: updateAnswers ' + answers);
     return await answerRepository.updateAnswers(answers);
   }
-
-  // TODO: remove
-  // async deleteAnswer(answerId) {
-  //   logger.info('Controller: deleteAnswer ' + answerId);
-  //   return await answerRepository.deleteAnswer(answerId);
-  // }
 
   async deleteAnswers(answerIds) {
     logger.info('Controller: deleteAnswers ' + answerIds);

@@ -1,5 +1,5 @@
 const populate = async (db) => {
-  await db.user.create({
+  await db.account.create({
     username: 'admin',
     hash: '6578b2b3a58ea42c6c53cbc7a42e110ee9662e731a01e74f3797c8bc26417a83c64881dabf20ca7c8fbf25cedda112389710fd739a7e8ee9e3bb755521eb6dcb',
     salt: '7c8f538a7e4b0badf6a07e33151633d5'

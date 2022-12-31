@@ -45,18 +45,6 @@ class AnswerRepository {
     return data;
   }
 
-  // TODO: remove
-  // async createAnswer(answer) {
-  //   let data = {};
-  //   try {
-  //     data = await this.db.answer.create(answer);
-  //     logger.info(`POST /section/.../question/${answer.questionId}/answer :::` + data);
-  //   } catch(err) {
-  //     logger.error(`POST /section/.../question/${answer.questionId}/answer :::` + err);
-  //   }
-  //   return data;
-  // }
-
   async createAnswers(answers) {
     let data = {};
     try {
@@ -68,22 +56,6 @@ class AnswerRepository {
     }
     return data;
   }
-
-  // TODO: remove
-  // async updateAnswer(answer) {
-  //   let data = {};
-  //   try {
-  //     data = await this.db.answer.update({...answer}, {
-  //       where: {
-  //         id: answer.id
-  //       }
-  //     });
-  //     logger.info(`PUT /section/.../question/${answer.questionId}/answer/${answer.id} :::` + data);
-  //   } catch(err) {
-  //     logger.error(`PUT /section/.../question/${answer.questionId}/answer/${answer.id} :::` + err);
-  //   }
-  //   return data;
-  // }
 
   async updateAnswers(answers) {
     let data = {};
@@ -98,22 +70,6 @@ class AnswerRepository {
     }
     return data;
   }
-
-  // TODO: remove
-  // async deleteAnswer(answerId) {
-  //   let data = {};
-  //   try {
-  //     data = await this.db.answer.destroy({
-  //       where: {
-  //         id: answerId
-  //       }
-  //     });
-  //     logger.info(`DELETE /section/.../question/.../${answerId} :::` + data);
-  //   } catch(err) {
-  //     logger.error(`DELETE /section/.../question/.../${answerId} :::` + err);
-  //   }
-  //   return data;
-  // }
 
   async deleteAnswers(answerIds) {
     let data = {};

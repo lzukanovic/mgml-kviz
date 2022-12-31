@@ -191,7 +191,10 @@ export class QuestionComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   */
 
   async loadQuestion() {
-    if (!this.sectionId || !this.questionId) return;
+    if (!this.sectionId || !this.questionId) {
+      this.loadingAnswers = false;
+      return;
+    }
 
     this.question = await lastValueFrom(this.questionService.getQuestion(this.sectionId, this.questionId));
     await this.loadAnswers();
@@ -264,7 +267,7 @@ export class QuestionComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   @HostListener('window:beforeunload')
   canDeactivate(): boolean {
     if (!this.form) return true;
-    return !this.form.dirty || !this.uploading;
+    return !this.form.dirty;
   }
 
   goBack() {

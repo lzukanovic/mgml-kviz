@@ -196,35 +196,4 @@ const onlyInLeft = (left, right, compareFunction) =>
     !right.some(rightValue =>
       compareFunction(leftValue, rightValue)));
 
-// TODO: remove
-// // create answer in question by question id
-// app.post("/section/:sectionId/question/:questionId/answer", async (req, res) => {
-//   const data = {
-//     ...req.body.answer,
-//     questionId: req.params.questionId,
-//   }
-//   // check and fill missing order number
-//   if (!data.order) {
-//     const answers = await answerController.getAnswers(req.params.questionId);
-//     const max = Math.max(...answers.map(a => a.order));
-//     data.order = max + 1;
-//   }
-//   answerController.createAnswer(data).then(data => res.json(data));
-// })
-//
-// // update answer
-// app.put("/section/:sectionId/question/:questionId/answer/:answerId", (req, res) => {
-//   const data = {
-//     ...req.body.answer,
-//     questionId: req.params.questionId,
-//     id: req.params.answerId,
-//   }
-//   answerController.updateAnswer(data).then(data => res.json(data));
-// })
-//
-// // delete answer
-// app.delete("/section/:sectionId/question/:questionId/answer/:answerId", (req, res) => {
-//   answerController.deleteAnswer(req.params.answerId).then(data => res.json(data));
-// })
-
 module.exports = app;

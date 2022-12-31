@@ -1,7 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {lastValueFrom, Subject, takeUntil} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
-import {environment} from "../../../../environments/environment";
 import {Question} from "../../../shared/interfaces";
 import {SafeUrl} from "@angular/platform-browser";
 import {QuestionService} from "../../../services/question.service";
@@ -39,7 +38,8 @@ export class QrCodeComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         this.id = parseInt(params.get('questionId') ?? '');
-        this.url = environment.baseUrl + 'public/question/' + this.id;
+        const baseUrl = window.location.protocol + '//' + window.location.host + '/'
+        this.url = baseUrl + 'public/question/' + this.id;
         this.loadQuestion();
       });
   }

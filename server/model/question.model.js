@@ -36,12 +36,6 @@ module.exports = (sequelize, DataTypes, Model) => {
       values: ['singleChoice', 'multipleChoice'],
       allowNull: false
     },
-    // TODO: remove
-    // content: {
-    //   type: DataTypes.ENUM,
-    //   values: ['text', 'image'],
-    //   allowNull: false
-    // },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false

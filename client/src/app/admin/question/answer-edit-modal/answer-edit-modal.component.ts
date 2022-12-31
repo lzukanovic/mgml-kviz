@@ -123,11 +123,6 @@ export class AnswerEditModalComponent implements OnInit {
 
   async delete(): Promise<void> {
     if (this.questionId && this.answerId && await this.deleteModal.open()) {
-      // TODO: remove
-      // const res = await lastValueFrom(this.answerService.deleteAnswer(-1, this.questionId, this.answerId))
-      // if (!res) {
-      //   // TODO: error something went wrong with deleting the section
-      // }
       this.form.reset();
       this.preview = null;
       this.modalRef.close({...this.answer, action: "DELETE"} as AnswerEdit);
@@ -148,19 +143,6 @@ export class AnswerEditModalComponent implements OnInit {
       questionId: this.questionId,
       ...this.form.getRawValue()
     }
-
-    // TODO: remove
-    // if (this.answerId) {
-    //   const res = await lastValueFrom(this.answerService.updateAnswer(-1, this.questionId, data))
-    //   if (!res) {
-    //     // TODO: error something went wrong with updating the section
-    //   }
-    // } else {
-    //   const res = await lastValueFrom(this.answerService.createAnswer(-1, this.questionId, data))
-    //   if (!res) {
-    //     // TODO: error something went wrong with creating the section
-    //   }
-    // }
 
     this.form.reset();
     this.preview = null;
