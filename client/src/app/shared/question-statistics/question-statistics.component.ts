@@ -57,6 +57,9 @@ export class QuestionStatisticsComponent implements OnInit, OnDestroy {
         type: 'category',
         axisTick: {
           alignWithLabel: true
+        },
+        axisLabel: {
+          interval: 0
         }
       }
     ],

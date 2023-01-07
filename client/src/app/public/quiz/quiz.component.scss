@@ -7,13 +7,20 @@
   width: clamp(5rem, 30vw, 9rem);
 }
 .answer-image {
-  height: 100%;
-  width: clamp(5rem, 30vw, 9rem);
-  object-fit: cover;
+  //height: 100%;
+  //width: clamp(5rem, 30vw, 50vw);
+  width: 100%;
+  object-fit: contain;
 }
 
 @media (max-width: 300px) {
   img {
     margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1700px) {
+  .answer-image-container {
+    max-width: 400px;
   }
 }

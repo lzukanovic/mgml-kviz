@@ -1,6 +1,6 @@
 <div class="container-fluid d-flex flex-column pt-5 pb-1">
   <div class="row flex-grow-1 justify-content-center h-100">
-    <div class="col-10 col-sm-8 col-lg-5">
+    <div class="col-11 col-sm-9 col-md-8 col-lg-7 col-xl-6">
       <div class="card">
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column align-items-stretch" novalidate>
@@ -12,7 +12,7 @@
               <p *ngIf="question.description as description" class="mb-3 text-muted small">{{description}}</p>
 
               <div class="mb-5" *ngIf="answers.length">
-                <div class="form-check" *ngFor="let answer of answers; let i = index">
+                <div class="form-check mb-2" *ngFor="let answer of answers; let i = index">
                   <ng-container *ngIf="question.type === 'singleChoice'">
                     <input
                       class="form-check-input"
@@ -38,8 +38,11 @@
                   </label>
 
                   <label [for]="'answer' + answer.id" class="d-block">
-                    <img *ngIf="imagesMap.has(answer.id)" [src]="imagesMap.get(answer.id)"
-                         class="rounded answer-image" alt="">
+                    <div class="row" *ngIf="imagesMap.has(answer.id)">
+                      <div class="col-12 col-md-10 col-xl-8 answer-image-container">
+                        <img [src]="imagesMap.get(answer.id)" class="rounded img-fluid answer-image" alt="">
+                      </div>
+                    </div>
                   </label>
                 </div>
                 <div *ngIf="!hasAnswered" class="invalid-feedback" [class.d-block]="form.invalid">
